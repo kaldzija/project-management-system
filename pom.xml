@@ -13,6 +13,8 @@
         <servlet-version>3.1.0</servlet-version>
         <spring-version>4.2.5.RELEASE</spring-version>
         <servlet-jstl-version>1.2</servlet-jstl-version>
+        <hibernate.version>5.1.0.Final</hibernate.version>
+        <jackson-version>2.7.4</jackson-version>
     </properties>
 
     <dependencies>
@@ -52,11 +54,52 @@
             <artifactId>heroku-jdbc</artifactId>
             <version>0.1.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.jscience</groupId>
             <artifactId>jscience</artifactId>
             <version>4.3.1</version>
         </dependency>
+
+        <!-- Postgres -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4-1201-jdbc4</version>
+        </dependency>
+
+        <!-- ORM -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
+        <!-- JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-hibernate5</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
