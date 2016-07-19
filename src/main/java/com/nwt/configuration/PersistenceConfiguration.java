@@ -47,9 +47,9 @@ public class PersistenceConfiguration
         dataSource.setUsername("postgres");
         dataSource.setPassword("root");
 
-        dataSource.setUrl(dbUrl);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+//        dataSource.setUrl(dbUrl);
+//        dataSource.setUsername(username);
+//        dataSource.setPassword(password);
 
         return dataSource;
     }

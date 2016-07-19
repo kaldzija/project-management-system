@@ -30,7 +30,12 @@ public class TestController
     {
         Test test = new Test();
         test.setDate(dateFormat.format(new Date()));
-        test.setIp(request.getRemoteAddr());
+        String ipAddress = request.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null)
+        {
+            ipAddress = request.getRemoteAddr();
+        }
+        test.setIp(ipAddress);
         testService.create(test);
         return test;
     }
