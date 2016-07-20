@@ -34,7 +34,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         .state('login', {
             url: "/login",
             templateUrl: "public/views/login.html",
-            data: {pageTitle: 'Example view'}
+            data: {pageTitle: 'Login', specialClass: 'gray-bg'}
         })
 }
 angular
