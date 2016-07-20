@@ -19,7 +19,7 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
         .state('index', {
             abstract: true,
             url: "/index",
-            templateUrl: "public/views/common/content.html",
+            templateUrl: "public/views/common/content.html"
         })
         .state('index.main', {
             url: "/main",
@@ -31,10 +31,23 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: "public/views/minor.html",
             data: {pageTitle: 'Example view'}
         })
+        .state('login', {
+            url: "/login",
+            templateUrl: "public/views/login.html",
+            data: {pageTitle: 'Example view'}
+        })
 }
 angular
     .module('inspinia')
     .config(config)
-    .run(function ($rootScope, $state) {
+    .run(function ($rootScope, $state, $location) {
         $rootScope.$state = $state;
+
+        $rootScope.$on('$stateChangeStart', function (e, toState, toParams, fromState, fromParams) {
+            if (toState.name != 'login' && $rootScope.currentUser == null) {
+                $location.path('login');
+            }
+            if (toState.name == 'login' && $rootScope.currentUser != null)
+                e.preventDefault();
+        });
     });
