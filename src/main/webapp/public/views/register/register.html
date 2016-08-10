@@ -1,0 +1,54 @@
+<div class="middle-box text-center loginscreen   animated fadeInDown">
+    <div ng-controller="RegisterController">
+        <div>
+
+            <h1 class="logo-name">PM</h1>
+
+        </div>
+        <h3>Register to PM</h3>
+        <p>Create account to see it in action.</p>
+        <form class="m-t" role="form" id="registrationForm" name="registrationForm" novalidate>
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="{{'DISPLAY_NAME'|translate}}" required
+                       name="displayName" ng-model="user.displayName">
+                <small class="text-danger"
+                       ng-if="registrationForm.displayName.$error.required && registrationForm.submitted"
+                       translate="ERROR_REQUIRED"
+                       translate-value-field="{{'DISPLAY_NAME' | translate}}">
+                </small>
+            </div>
+            <div class="form-group">
+                <input type="email" class="form-control" placeholder="{{'EMAIL'|translate}}" name="email" required
+                       ng-model="user.email">
+                <small class="text-danger"
+                       ng-if="registrationForm.email.$error.required && registrationForm.submitted"
+                       translate="ERROR_REQUIRED"
+                       translate-value-field="{{'EMAIL' | translate}}">
+                </small>
+                <small class="text-danger"
+                       ng-if="exists">
+                    {{'ERROR_MESSAGE_USER_EXIST'|translate}}
+                </small>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" name="password" placeholder="{{'PASSWORD'|translate}}"
+                       required ng-model="user.password">
+                <small class="text-danger"
+                       ng-if="registrationForm.password.$error.required && registrationForm.submitted"
+                       translate="ERROR_REQUIRED"
+                       translate-value-field="{{'PASSWORD' | translate}}">
+                </small>
+            </div>
+            <div class="form-group">
+                <div class="checkbox i-checks"><label> <input type="checkbox"><i></i> Agree the terms and policy
+                </label></div>
+            </div>
+            <button type="submit" class="btn btn-primary block full-width m-b" ng-click="signUp()">Register</button>
+
+            <p class="text-muted text-center">
+                <small>Already have an account?</small>
+            </p>
+            <a class="btn btn-sm btn-white btn-block" ui-sref="login">Login</a>
+        </form>
+    </div>
+</div>

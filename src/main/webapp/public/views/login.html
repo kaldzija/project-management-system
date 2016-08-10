@@ -1,20 +1,46 @@
 <div class="middle-box text-center loginscreen  animated fadeInDown">
-    <div>
+    <div ng-controller="AuthenticationController">
         <div>
-            <h1 class="logo-name">IN+</h1>
+            <h1 class="logo-name">PM</h1>
         </div>
-        <h3>Welcome to IN+</h3>
-        <p>Perfectly designed and precisely prepared admin theme with over 50 pages with extra new web app views.
+        <h3>Welcome to PM</h3>
+        <p>PM is project management software designed for tracking project life cycle with main information.
         </p>
-        <p>Login in. To see it in action.</p>
-        <form class="m-t" role="form" action="#">
+        <!--<p>Login in. To see it in action.</p>-->
+        <div class="row">
+            <div class="col-sm-2 col-sm-offset-2 border-bottom-light">
+                <button class="btn btn-social-base btn-facebook" ng-click="authenticate('facebook')">
+                    <i class="fa fa-facebook"></i>
+                </button>
+            </div>
+            <div class="col-sm-2 border-bottom-light">
+                <button class="btn btn-social-base btn-google-plus" ng-click="authenticate('google')">
+                    <i class="fa fa-google"></i>
+                </button>
+            </div>
+            <div class="col-sm-2 border-bottom-light">
+                <button class="btn btn-social-base btn-linkedin" ng-click="authenticate('linkedin')">
+                    <i class="fa fa-linkedin"></i>
+                </button>
+            </div>
+            <div class="col-sm-2 border-bottom-light">
+                <button class="btn btn-social-base btn-twitter" ng-click="authenticate('twitter')">
+                    <i class="fa fa-twitter"></i>
+                </button>
+            </div>
+        </div>
+
+        <p style="margin-top: 5px;">or</p>
+
+        <form class="m-t" style="margin-top: 0px!important;" role="form">
             <div class="form-group">
-                <input type="email" class="form-control" placeholder="Username" required="">
+                <input type="email" class="form-control" placeholder="Username" ng-model="loginData.email" required="">
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" placeholder="Password" required="">
+                <input type="password" class="form-control" placeholder="Password" required=""
+                       ng-model="loginData.password">
             </div>
-            <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+            <button type="submit" class="btn btn-primary block full-width m-b" ng-click="login()">Login</button>
 
             <a ui-sref="forgot_password">
                 <small>Forgot password?</small>
@@ -24,8 +50,5 @@
             </p>
             <a class="btn btn-sm btn-white btn-block" ui-sref="register">Create an account</a>
         </form>
-        <p class="m-t">
-            <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small>
-        </p>
     </div>
 </div>

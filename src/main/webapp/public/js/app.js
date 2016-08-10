@@ -7,6 +7,11 @@
         'ui.router',                    // Routing
         'oc.lazyLoad',                  // ocLazyLoad
         'ui.bootstrap',                 // Ui Bootstrap
+        'pascalprecht.translate',       // Translations
+        'ngSanitize',
+        'ngResource',
+        'satellizer',
+        'toastr'
     ])
 })();
 
