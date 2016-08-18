@@ -158,4 +158,24 @@ angular
     .directive('sideNavigation', sideNavigation)
     .directive('iboxTools', iboxTools)
     .directive('minimalizaSidebar', minimalizaSidebar)
+    .directive('fooRepeatDone', function () {
+        return function ($scope, element) {
+            if ($scope.$last) { // all are rendered
+                $('.table').trigger('footable_redraw');
+            }
+        }
+    })
+    .directive('ngEnter', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if (event.which === 13 && event.shiftKey == false) {
+                    scope.$apply(function () {
+                        scope.$eval(attrs.ngEnter, {'event': event});
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        };
+    })
     .directive('iboxToolsFullScreen', iboxToolsFullScreen);

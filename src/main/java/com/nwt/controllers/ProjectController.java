@@ -5,6 +5,7 @@ import com.nwt.dao.model.ProjectMember;
 import com.nwt.dao.model.ProjectRoleEnum;
 import com.nwt.dao.model.ProjectStatusEnum;
 import com.nwt.services.ProjectService;
+import com.nwt.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,9 @@ public class ProjectController extends BaseController
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private TaskService taskService;
+    
     @ResponseBody
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Project getProject(@PathVariable(value = "id") Integer id)
@@ -39,6 +43,13 @@ public class ProjectController extends BaseController
     @RequestMapping(method = RequestMethod.POST)
     public Project createProject(@RequestBody Project project)
     {
+
+        if (project.getId() != null)
+        {
+            projectService.saveOrUpdate(project);
+            return project;
+        }
+
         project.setStatus(ProjectStatusEnum.ACTIVE);
         project.setCreatedDate(new Timestamp(System.currentTimeMillis()));
         projectService.saveOrUpdate(project);

@@ -6,6 +6,7 @@ import com.nwt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
 
 /**
  * Created by Jasmin Kaldzija on 04.06.2016..
@@ -39,5 +40,10 @@ public class BaseController
     public HttpServletRequest getRequest()
     {
         return request;
+    }
+
+    public Timestamp getCurrentTimestamp()
+    {
+        return new Timestamp(System.currentTimeMillis());
     }
 }

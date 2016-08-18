@@ -26,6 +26,8 @@ public class Project
     private Timestamp createdDate;
     private ProjectStatusEnum status;
     private List<ProjectMember> members = new ArrayList<ProjectMember>();
+    private String client;
+    private String version;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -98,5 +100,29 @@ public class Project
     public void setMembers(List<ProjectMember> members)
     {
         this.members = members;
+    }
+
+    @Basic
+    @Column(name = "client")
+    public String getClient()
+    {
+        return client;
+    }
+
+    public void setClient(String client)
+    {
+        this.client = client;
+    }
+
+    @Basic
+    @Column(name = "version")
+    public String getVersion()
+    {
+        return version;
+    }
+
+    public void setVersion(String version)
+    {
+        this.version = version;
     }
 }

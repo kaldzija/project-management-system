@@ -1,0 +1,84 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10" ng-controller="NavigationHelpController">
+        <h2>Issue List</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a ui-sref="index.main">Home</a>
+            </li>
+            <li>
+                <a ui-sref="index.projects">Project list</a>
+            </li>
+            <li>
+                <a ui-sref="index.project-details({projectId:projectId})">Project details</a>
+            </li>
+            <li class="active">
+                <strong>Tasks</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="wrapper wrapper-content  animated fadeInRight" ng-controller="TasksController">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Issue list</h5>
+                    <div class="ibox-tools">
+                        <a href="" ng-click="openCreateTaskModal()" class="btn btn-primary btn-xs">Add new issue</a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <input type="text" class="form-control input-sm m-b-xs" id="filter"
+                           placeholder="Search in table">
+
+                    <table class="footable table table-stripped" data-page-size="4" data-filter=#filter>
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>User</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="task in tasks" foo-repeat-done>
+                            <td>{{task.name}}</td>
+                            <td>{{task.user.displayName}}</td>
+                            <td>{{task.created | date:"dd.MM.yyyy HH:mm"}}</td>
+                            <td>{{task.updated | date:"dd.MM.yyyy HH:mm"}}</td>
+                            <td ng-if="task.status=='TODO'">
+                                To Do
+                            </td>
+                            <td ng-if="task.status=='IN_PROGRESS'">
+                                In progress
+                            </td>
+                            <td ng-if="task.status=='COMPLETED'">
+                                Completed
+                            </td>
+                            <td class="project-actions">
+                                <a href="" ui-sref="index.task-details({projectId:project.id,taskId:task.id})"
+                                   class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>
+                                <a ng-click="editTask(task.id)" class="btn btn-white btn-sm"><i
+                                        class="fa fa-pencil"></i> Edit </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                <ul class="pagination pull-right"></ul>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>

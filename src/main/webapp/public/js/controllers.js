@@ -6,7 +6,7 @@
 /**
  * MainCtrl - controller
  */
-function MainCtrl($scope, $rootScope, $auth, $location, $state) {
+function MainCtrl($scope, $rootScope, $auth, $location, $state, $stateParams) {
     $rootScope.currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
     $scope.logout = function () {
@@ -64,7 +64,7 @@ function AuthenticationController($scope, $auth, $rootScope, $location, $state) 
             $rootScope.currentUser = provider.data.user;
             localStorage.setItem("currentUser", JSON.stringify($rootScope.currentUser));
             $rootScope.isAuthorized = true;
-            $state.go('index.main');
+            $state.go('index.projects');
         });
     };
 
@@ -75,7 +75,7 @@ function AuthenticationController($scope, $auth, $rootScope, $location, $state) 
                 localStorage.setItem("currentUser", JSON.stringify($rootScope.currentUser));
                 $rootScope.isAuthorized = true;
                 // $location.path('/index/main');
-                $state.go('index.main');
+                $state.go('index.projects');
             })
             .catch(function (error) {
                 if (error.status == 406)
@@ -127,7 +127,9 @@ function ProjectController($scope, $modal, projectService) {
 function ModalCreateProjectController($scope, $modalInstance, projectService) {
     $scope.project = {
         name: null,
-        description: null
+        description: null,
+        client: null,
+        version: null
     };
 
 
@@ -152,10 +154,216 @@ function ModalCreateProjectController($scope, $modalInstance, projectService) {
         $modalInstance.dismiss('cancel');
     };
 }
+function NavigationHelpController($scope, $stateParams) {
+    $scope.projectId = $stateParams.projectId;
+    $scope.taskId = $stateParams.taskId;
+}
+function ProjectDetailsController($scope, $stateParams, projectService, $modal) {
+    projectService.getProject().get({id: $stateParams.projectId}).$promise.then(function (result) {
+        $scope.project = result;
+        $scope.project.members.forEach(function (member) {
+            if (member.role == 'OWNER') {
+                $scope.projectOwner = member.user;
+                return;
+            }
+        });
+    });
+    $scope.editProject = function () {
+        var editProjectModal = {
+            templateUrl: 'public/views/projects/modals/edit_project.html',
+            controller: ModalEditProjectController,
+            resolve: {
+                project: function () {
+                    return $scope.project;
+                }
+            }
+        };
+
+        $modal.open(editProjectModal).result.then(function (result) {
+            //Fake parameter
+        }, function (result) {
+            //Fake parameter
+            if (result == 'save') {
+                $scope.project = projectService.getProject().get({id: $stateParams.projectId});
+            }
+        });
+    }
+}
+
+function ModalEditProjectController($scope, $modalInstance, projectService, project) {
+    $scope.project = jQuery.extend(true, {}, project);
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.update = function () {
+        projectService.editProject().save($scope.project,
+            function (resp, headers) {
+                //success callback
+                $modalInstance.dismiss('save');
+            },
+            function (error, status) {
+                // error callback
+            });
+    };
+}
+
+function ModalCreateTaskController($scope, $modalInstance, taskService, project) {
+    $scope.project = project;
+    $scope.task = {
+        name: null,
+        description: null
+    };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.save = function () {
+        $scope.task.project = $scope.project;
+        taskService.saveOrUpdate().save($scope.task,
+            function (resp, headers) {
+                //success callback
+                $modalInstance.dismiss('save');
+            },
+            function (error, status) {
+                // error callback
+                $modalInstance.dismiss('save');
+            });
+
+    };
+};
+
+function TasksController($scope, $modal, $stateParams, projectService, taskService) {
+    $scope.project = projectService.getProject().get({id: $stateParams.projectId});
+    $scope.tasks = taskService.getProjectTasks().query({projectId: $stateParams.projectId});
+    var createTaskModal = {
+        templateUrl: 'public/views/tasks/modals/create_task.html',
+        controller: ModalCreateTaskController,
+        resolve: {
+            project: function () {
+                return $scope.project;
+            }
+        }
+    };
+
+    $scope.openCreateTaskModal = function () {
+        if ($scope.tasks)
+            $modal.open(createTaskModal).result.then(function (result) {
+                //Fake parameter
+            }, function (result) {
+                //Fake parameter
+                if (result == 'save') {
+                    $scope.tasks = taskService.getProjectTasks().query({projectId: $stateParams.projectId});
+                }
+            });
+    };
+
+    $scope.editTask = function (taskId) {
+        taskService.getTask().get({id: taskId}).$promise.then(function (result) {
+            var editTaskModal = {
+                templateUrl: 'public/views/tasks/modals/edit_task.html',
+                controller: ModalEditTaskController,
+                resolve: {
+                    task: function () {
+                        return result;
+                    }
+                }
+            };
+
+            $modal.open(editTaskModal).result.then(function (result) {
+                //Fake parameter
+            }, function (result) {
+                //Fake parameter
+                if (result == 'save') {
+                    // taskService.getTask().get({id:taskId}).$promise.then(function (result) {
+                    //     for(i=0;i<$scope.tasks.length;i++)
+                    //     {
+                    //         if($scope.tasks[i].id==taskId)
+                    //         {
+                    //             $scope.tasks[i]==result;
+                    //             return;
+                    //         }
+                    //     }
+                    // })
+                    $scope.tasks = taskService.getProjectTasks().query({projectId: $stateParams.projectId});
+                }
+            });
+        });
+    }
+}
+
+
+function TaskDetailController($scope, $modal, $stateParams, projectService, taskService) {
+    $scope.project = projectService.getProject().get({id: $stateParams.projectId});
+    $scope.task = taskService.getTask().get({id: $stateParams.taskId});
+
+    $scope.editTask = function () {
+        var editTaskModal = {
+            templateUrl: 'public/views/tasks/modals/edit_task.html',
+            controller: ModalEditTaskController,
+            resolve: {
+                task: function () {
+                    return $scope.task;
+                }
+            }
+        };
+
+        $modal.open(editTaskModal).result.then(function (result) {
+            //Fake parameter
+        }, function (result) {
+            //Fake parameter
+            if (result == 'save') {
+                $scope.task = taskService.getTask().get({id: $stateParams.taskId});
+            }
+        });
+    }
+
+}
+
+function ModalEditTaskController($scope, $modalInstance, taskService, task) {
+    $scope.task = jQuery.extend(true, {}, task);
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.update = function () {
+        taskService.saveOrUpdate().save($scope.task,
+            function (resp, headers) {
+                //success callback
+                $modalInstance.dismiss('save');
+            },
+            function (error, status) {
+                // error callback
+            });
+    };
+}
+function TaskCommentsController($scope, $stateParams, taskService) {
+    $scope.taskId = $stateParams.taskId;
+    $scope.newComment = {content: null};
+    $scope.taskComments = taskService.getTaskComments().query({id: $scope.taskId});
+    $scope.createComment = function () {
+        taskService.saveOrUpdateComment($scope.taskId).save($scope.newComment,
+            function (resp, headers) {
+                // $scope.taskComments=taskService.getTaskComments().query({id:$scope.taskId});
+                $scope.taskComments.push(resp);
+                $scope.newComment = {content: null};
+            },
+            function (error, status) {
+
+            });
+    }
+}
 angular
     .module('inspinia')
     .controller('RegisterController', ['$scope', '$auth', '$translate', 'toastr', '$state', RegisterController])
     .controller('AuthenticationController', ['$scope', '$auth', '$rootScope', '$location', '$state', AuthenticationController])
     .controller('TranslateController', ['$translate', '$scope', TranslateController])
     .controller('ProjectController', ProjectController)
-    .controller('MainCtrl', ['$scope', '$rootScope', '$auth', '$location', '$state', MainCtrl]);
+    .controller('ProjectDetailsController', ProjectDetailsController)
+    .controller('NavigationHelpController', NavigationHelpController)
+    .controller('TasksController', TasksController)
+    .controller('TaskDetailController', TaskDetailController)
+    .controller('TaskCommentsController', TaskCommentsController)
+    .controller('ModalCreateTaskController', ModalCreateTaskController)
+    .controller('ModalEditTaskController', ModalEditTaskController)
+    .controller('MainCtrl', ['$scope', '$rootScope', '$auth', '$location', '$state', '$stateParams', MainCtrl]);

@@ -7,7 +7,7 @@
  *
  */
 function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
-    $urlRouterProvider.otherwise("/index/main");
+    $urlRouterProvider.otherwise("/index/projects");
 
     $ocLazyLoadProvider.config({
         // Set to true if you want to see what and when is dynamically loaded
@@ -35,6 +35,34 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             url: "/projects",
             templateUrl: "public/views/projects/projects.html",
             data: {pageTitle: 'Projects view'}
+        })
+        .state('index.project-details', {
+            url: "/projects/:projectId",
+            templateUrl: "public/views/projects/project_detail.html",
+            data: {pageTitle: 'Project details'}
+        })
+        .state('index.task-details', {
+            url: "/projects/:projectId/tasks/:taskId",
+            templateUrl: "public/views/tasks/task_detail.html",
+            data: {pageTitle: 'Task details'}
+        })
+        .state('index.issue-tracker', {
+            url: "/projects/:projectId/tasks",
+            templateUrl: "public/views/projects/issue_tracker.html",
+            data: {pageTitle: 'Task list'},
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            files: ['public/js/footable/footable.all.min.js', 'public/css/footable/footable.core.css']
+                        },
+                        {
+                            name: 'ui.footable',
+                            files: ['public/js/footable/angular-footable.js']
+                        }
+                    ]);
+                }
+            }
         })
         .state('login', {
             url: "/login",

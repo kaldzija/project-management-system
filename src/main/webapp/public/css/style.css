@@ -5948,6 +5948,11 @@ dd.project-people {
     height: 32px;
 }
 
+.project-details-people img {
+    width: 32px;
+    height: 32px;
+}
+
 .project-title a {
     font-size: 14px;
     color: #676a6c;
@@ -6519,6 +6524,12 @@ table.shoping-cart-table tr td:last-child {
     border-top: 1px solid #e7eaec;
     padding: 10px 15px;
     background: #f9f9f9;
+}
+
+.social-footer-default {
+    border-top: none;
+    padding: 0px;
+    background: white;
 }
 
 .social-footer .social-comment img {

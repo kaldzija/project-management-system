@@ -19,4 +19,29 @@ angular.module('inspinia')
         this.getProjects = function () {
             return $resource(getApiUrl('/projects'))
         };
+
+        this.editProject = function () {
+            return $resource(getApiUrl('/projects'))
+        };
+    }])
+    .service("taskService", ['$resource', function ($resource) {
+        this.getTask = function () {
+            return $resource(getApiUrl('/tasks/:id'))
+        };
+
+        this.saveOrUpdateComment = function (taskId) {
+            return $resource(getApiUrl('/tasks/' + taskId + '/comments'))
+        };
+
+        this.getProjectTasks = function () {
+            return $resource(getApiUrl('/tasks?projectId=:projectId'))
+        };
+
+        this.saveOrUpdate = function () {
+            return $resource(getApiUrl('/tasks'))
+        };
+
+        this.getTaskComments = function () {
+            return $resource(getApiUrl('/tasks/:id/comments'))
+        };
     }]);
