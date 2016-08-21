@@ -8,9 +8,8 @@
                     <a class="dropdown-toggle" dropdown-toggle href>
                             <span class="clear">
                                 <span class="block m-t-xs">
-                                    <strong class="font-bold">{{currentUser.displayName}}</strong>
+                                    <strong class="font-bold">{{currentUser.displayName}}<b class="caret"></b></strong>
                              </span>
-                                <span class="text-muted text-xs block">Example menu<b class="caret"></b></span>
                             </span>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
@@ -31,6 +30,15 @@
             <!--</li>-->
             <li ui-sref-active="active">
                 <a ui-sref="index.projects"><i class="fa fa-cubes"></i> <span class="nav-label">Projects</span></a>
+            </li>
+
+            <li ng-class="{active: $state.includes('users')}">
+                <a href=""><i class="fa fa-users"></i> <span class="nav-label">{{'LABEL_CONTACTS'|translate}}</span></a>
+                <ul class="nav nav-second-level collapse" ng-class="{in: $state.includes('users')}">
+                    <li ui-sref-active="active"><a ui-sref="users.contacts">{{'LABEL_MY_CONTACTS'|translate}}</a></li>
+                    <li ui-sref-active="active"><a ui-sref="users.other-users">{{'LABEL_FIND_NEW_CONTACTS' +
+                        ''|translate}}</a></li>
+                </ul>
             </li>
         </ul>
 

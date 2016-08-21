@@ -1,0 +1,69 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-9">
+        <h2>{{'LABEL_MY_CONTACTS'|translate}}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="">Home</a>
+            </li>
+            <li class="active">
+                <strong>{{'LABEL_MY_CONTACTS' | translate}}</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight" ng-controller="ContactsController">
+    <div class="row">
+        <div class="col-lg-3" ng-repeat="contact in contacts">
+            <div ng-show="currentUser.id==contact.receiver.id" class="contact-box center-version">
+
+                <a href="">
+
+                    <img alt="image" class="img-circle" src="api/image/user/{{contact.sender.id}}">
+
+
+                    <h3 class="m-b-xs"><strong>{{contact.sender.displayName}}</strong></h3>
+
+                    <div class="font-bold">{{contact.sender.profession}}</div>
+                    <!--<address class="m-t-md">-->
+                    <!--<abbr title="{{'LABEL_PHONE'|translate}}">{{'LABEL_PHONE'|translate}}</abbr> {{contact.sender.phone}}<br>-->
+                    <!--<abbr title="{{'EMAIL'|translate}}">{{'EMAIL'|translate}}</abbr> {{contact.sender.email}}-->
+                    <!--</address>-->
+
+                </a>
+                <div class="contact-box-footer">
+                    <div class="m-t-xs btn-group">
+                        <a class="btn btn-xs btn-white">{{'LABEL_VIEW'|translate}} </a>
+                        <a class="btn btn-xs btn-white">{{'LABEL_REMOVE'|translate}} </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div ng-show="currentUser.id==contact.sender.id" class="contact-box center-version">
+
+                <a href="profile.html">
+
+                    <img alt="image" class="img-circle" src="api/image/user/{{contact.receiver.id}}">
+
+
+                    <h3 class="m-b-xs"><strong>{{contact.receiver.displayName}}</strong></h3>
+
+                    <div class="font-bold">{{contact.receiver.profession}}</div>
+                    <!--<address class="m-t-md">-->
+                    <!--<abbr title="{{'LABEL_PHONE'|translate}}">{{'LABEL_PHONE'|translate}}</abbr> {{contact.sender.phone}}<br>-->
+                    <!--<abbr title="{{'EMAIL'|translate}}">{{'EMAIL'|translate}}</abbr> {{contact.sender.email}}-->
+                    <!--</address>-->
+
+                </a>
+                <div class="contact-box-footer">
+                    <div class="m-t-xs btn-group">
+                        <a class="btn btn-xs btn-white">{{'LABEL_VIEW'|translate}} </a>
+                        <a class="btn btn-xs btn-white">{{'LABEL_REMOVE'|translate}} </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

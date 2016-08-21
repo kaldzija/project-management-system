@@ -20,6 +20,11 @@ public class BaseController
     @Autowired
     private HttpServletRequest request;
 
+    public UserService getUserService()
+    {
+        return userService;
+    }
+
     public Integer getCurrentUserId()
     {
         try
@@ -45,5 +50,20 @@ public class BaseController
     public Timestamp getCurrentTimestamp()
     {
         return new Timestamp(System.currentTimeMillis());
+    }
+
+    protected class FakeObject
+    {
+        private Object result;
+
+        public Object getResult()
+        {
+            return result;
+        }
+
+        public void setResult(Object result)
+        {
+            this.result = result;
+        }
     }
 }

@@ -71,6 +71,7 @@ public class AuthenticationController extends BaseController
         FacebookToken facebookToken = restTemplate.getForObject(targetUrl, FacebookToken.class);
 
         targetUrl = UriComponentsBuilder.fromUriString(graphApiUrl).queryParam("access_token", facebookToken.getAccess_token()).queryParam("fields", "id,gender,first_name,last_name,picture").queryParam("expires_in", facebookToken.getExpires_in()).build().toUri();
+
         FacebookUser facebookUser = restTemplate.getForObject(targetUrl, FacebookUser.class);
 
         User user = userService.getSocialUser(facebookUser.getId(), SocialTypeEnum.FACEBOOK);

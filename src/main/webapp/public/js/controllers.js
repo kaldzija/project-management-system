@@ -110,10 +110,8 @@ function ProjectController($scope, $modal, projectService) {
     $scope.open = function () {
 
         $modal.open(modalInstance).result.then(function (result) {
-            //Fake parameter
-            $scope.fake = '?' + new Date().getTime();
+
         }, function (result) {
-            //Fake parameter
             $scope.projects = projectService.getProjects().query();
         });
     };
@@ -159,6 +157,7 @@ function NavigationHelpController($scope, $stateParams) {
     $scope.taskId = $stateParams.taskId;
 }
 function ProjectDetailsController($scope, $stateParams, projectService, $modal) {
+    $scope.projectMembers = projectService.getProjectMembers().query({projectId: $stateParams.projectId});
     projectService.getProject().get({id: $stateParams.projectId}).$promise.then(function (result) {
         $scope.project = result;
         $scope.project.members.forEach(function (member) {
@@ -172,6 +171,28 @@ function ProjectDetailsController($scope, $stateParams, projectService, $modal) 
         var editProjectModal = {
             templateUrl: 'public/views/projects/modals/edit_project.html',
             controller: ModalEditProjectController,
+            resolve: {
+                project: function () {
+                    return $scope.project;
+                }
+            }
+        };
+
+        $modal.open(editProjectModal).result.then(function (result) {
+            //Fake parameter
+        }, function (result) {
+            //Fake parameter
+            if (result == 'save') {
+                $scope.project = projectService.getProject().get({id: $stateParams.projectId});
+            }
+        });
+    };
+
+    $scope.changeStatus = function () {
+        var editProjectModal = {
+            templateUrl: 'public/views/projects/modals/project_status.html',
+            controller: ModalEditProjectController,
+            size: 'sm',
             resolve: {
                 project: function () {
                     return $scope.project;
@@ -318,6 +339,27 @@ function TaskDetailController($scope, $modal, $stateParams, projectService, task
         });
     }
 
+    $scope.changeStatus = function () {
+        var editTaskModal = {
+            templateUrl: 'public/views/tasks/modals/task_status.html',
+            controller: ModalEditTaskController,
+            resolve: {
+                task: function () {
+                    return $scope.task;
+                }
+            }
+        };
+
+        $modal.open(editTaskModal).result.then(function (result) {
+            //Fake parameter
+        }, function (result) {
+            //Fake parameter
+            if (result == 'save') {
+                $scope.task = taskService.getTask().get({id: $stateParams.taskId});
+            }
+        });
+    }
+
 }
 
 function ModalEditTaskController($scope, $modalInstance, taskService, task) {
@@ -353,6 +395,89 @@ function TaskCommentsController($scope, $stateParams, taskService) {
             });
     }
 }
+
+function NotificationController($scope, userService) {
+
+    $scope.notifications = userService.getNotifications().query();
+    $scope.resolveContact = function (notificationId, accept) {
+        userService.resolveContact(notificationId, accept).save({id: 0},
+            function (resp, headers) {
+                $scope.notifications = resp.result;
+                $scope.showNoNotificationMessage = $scope.notifications.length == 0;
+            },
+            function (error, status) {
+
+            });
+    }
+}
+function FindContactController($scope, userService, $translate, toastr) {
+
+    $scope.users = userService.getOtherUsers().query();
+    $scope.searchBox = null;
+    $scope.filterUsers = function (element) {
+        if ($scope.searchBox == null)
+            return true;
+        var matchName = element.name.toUpperCase().match($scope.searchBox.toUpperCase());
+        var matchEmail = element.email ? element.email.toUpperCase().match($scope.searchBox.toUpperCase()) : false;
+        return matchEmail || matchName;
+    };
+
+    $scope.createContact = function (user) {
+        userService.createContact().save({receiver: {id: user.id}},
+            function (resp, headers) {
+                user.hideSendRequest = true;
+                $translate('LABEL_SENT_REQUEST').then(function (value) {
+                    toastr.success(value);
+                });
+            },
+            function (error, status) {
+
+            });
+    }
+}
+function ProjectUsersController($scope, $stateParams, userService, $translate, toastr) {
+    $scope.projectId = $stateParams.projectId;
+    $scope.users = userService.getProjectMembers().query({projectId: $scope.projectId});
+    $scope.searchBox = null;
+    $scope.filterUsers = function (element) {
+        if ($scope.searchBox == null)
+            return true;
+        var matchName = element.name.toUpperCase().match($scope.searchBox.toUpperCase());
+        var matchEmail = element.email ? element.email.toUpperCase().match($scope.searchBox.toUpperCase()) : false;
+        return matchEmail || matchName;
+    };
+
+    $scope.addUser = function (user) {
+        userService.createProjectMember().save({user: {id: user.id}, project: {id: $scope.projectId}},
+            function (resp, headers) {
+                user.projectRole = 'MEMBER';
+                $translate('LABEL_USER_ADDED_PROJECT').then(function (value) {
+                    toastr.success(value);
+                });
+            },
+            function (error, status) {
+
+            });
+    }
+
+    $scope.removeUser = function (user) {
+        userService.createProjectMember().remove({userId: user.id, projectId: $scope.projectId},
+            function (resp, headers) {
+                user.projectRole = '';
+                $translate('LABEL_USER_ADDED_PROJECT').then(function (value) {
+                    toastr.success(value);
+                });
+            },
+            function (error, status) {
+
+            });
+    }
+}
+
+function ContactsController($scope, userService, $translate, toastr) {
+
+    $scope.contacts = userService.getContacts().query();
+}
 angular
     .module('inspinia')
     .controller('RegisterController', ['$scope', '$auth', '$translate', 'toastr', '$state', RegisterController])
@@ -366,4 +491,8 @@ angular
     .controller('TaskCommentsController', TaskCommentsController)
     .controller('ModalCreateTaskController', ModalCreateTaskController)
     .controller('ModalEditTaskController', ModalEditTaskController)
+    .controller('NotificationController', NotificationController)
+    .controller('ContactsController', ContactsController)
+    .controller('FindContactController', FindContactController)
+    .controller('ProjectUsersController', ProjectUsersController)
     .controller('MainCtrl', ['$scope', '$rootScope', '$auth', '$location', '$state', '$stateParams', MainCtrl]);

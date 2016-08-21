@@ -1,0 +1,62 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10" ng-controller="NavigationHelpController">
+        <h2>{{'LABEL_PARTICIPANTS'|translate}}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a ui-sref="index.main">Home</a>
+            </li>
+            <li>
+                <a ui-sref="index.projects">Project list</a>
+            </li>
+            <li>
+                <a ui-sref="index.project-details({projectId:projectId})">Project details</a>
+            </li>
+            <li class="active">
+                <strong>{{'LABEL_PARTICIPANTS'|translate}}</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="wrapper wrapper-content  animated fadeInRight" ng-controller="ProjectUsersController">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <h2>{{'LABEL_PARTICIPANTS'|translate}}</h2>
+                    <p>
+                        {{'LABEL_FIND_PARTICIPANTS_MESSAGE_1' | translate}}
+                    </p>
+                    <div class="input-group" style="width: 100%;">
+                        <input style="width: 100%;" ng-model="searchBox" type="text"
+                               placeholder="{{'LABEL_SEARCH'|translate}}" class="input form-control">
+                    </div>
+                    <div class="clients-list">
+                        <div class="full-height-scroll" full-scroll>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <tbody>
+                                    <tr ng-repeat="user in users|filter:filterUsers">
+                                        <td class="client-avatar"><img alt="image" src="api/image/user/{{user.id}}">
+                                        </td>
+                                        <td><a ng-click="client = 1" class="client-link">{{user.name}}</a></td>
+                                        <td class="contact-type"><i class="fa fa-envelope"> </i></td>
+                                        <td> {{user.email}}</td>
+                                        <td>{{user.phone}}</td>
+                                        <td ng-show="user.projectRole!='MEMBER'"><a ng-click="addUser(user)">{{'LABEL_ADD'|translate}}</a>
+                                        </td>
+                                        <td ng-show="user.projectRole=='MEMBER'"><a ng-click="removeUser(user)">{{'LABEL_REMOVE'|translate}}</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

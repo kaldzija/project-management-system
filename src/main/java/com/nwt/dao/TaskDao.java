@@ -27,6 +27,7 @@ public class TaskDao extends BaseDao<Task> implements ITaskDao
     {
         Criteria criteria = getSession().createCriteria(Task.class);
         criteria.add(Restrictions.eq("project", project));
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 }

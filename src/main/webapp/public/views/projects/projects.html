@@ -44,7 +44,7 @@
 
                         <table class="table table-hover">
                             <tbody>
-                            <tr ng-repeat="project in projects">
+                            <tr ng-repeat="project in projects|filter:filterProjects">
                                 <td class="project-status">
                                     <span ng-if="project.status=='ACTIVE'" class="label label-primary">{{'LABEL_ACTIVE'|translate}}</span>
                                     <span ng-if="project.status=='INACTIVE'" class="label label-default">{{'LABEL_INACTIVE'|translate}}</span>

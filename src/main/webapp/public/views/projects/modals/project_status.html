@@ -1,0 +1,24 @@
+<div class="inmodal">
+    <div class="modal-header">
+        <h4 class="modal-title">{{'LABEL_CHANGE_SATUS'|translate}}</h4>
+        <!--<small class="font-bold">{{'MESSAGE_FILL_ALL_FIELDS'|translate}}</small>-->
+    </div>
+    <div class="modal-body">
+        <form method="get" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">{{'LABEL_STATUS'|translate}}</label>
+                <div class="col-sm-10">
+                    <select class="form-control" name="singleSelect" ng-model="project.status">
+                        <option value="ACTIVE">{{'LABEL_ACTIVE'|translate}}</option>
+                        <option value="INACTIVE">{{'LABEL_INACTIVE'|translate}}</option>
+                    </select><br>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-white" ng-click="cancel()">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="update()">Save changes</button>
+    </div>
+</div>
+

@@ -65,7 +65,7 @@ public class TaskController extends BaseController
     @RequestMapping(method = RequestMethod.POST, value = "/{id}/comments")
     public TaskComment saveOrUpdateComment(@RequestBody Comment comment, @PathVariable(value = "id") Integer taskId)
     {
-        comment.setUser(userService.getUser(12));
+        comment.setUser(getCurrentUser());
         comment.setCreated(getCurrentTimestamp());
         commentService.saveOrUpdate(comment);
 

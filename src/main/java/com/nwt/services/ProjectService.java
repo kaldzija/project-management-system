@@ -2,6 +2,7 @@ package com.nwt.services;
 
 import com.nwt.dao.interfaces.IProjectDao;
 import com.nwt.dao.model.Project;
+import com.nwt.dao.model.ProjectMember;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,22 @@ public class ProjectService
         return projectDao.getProjectWithMembers(id);
     }
 
+    @Transactional
+    public ProjectMember getProjectMember(Integer projectId, Integer userId)
+    {
+        List<ProjectMember> projectMembers = projectDao.getProjectWithMembers(projectId).getMembers();
+        for (ProjectMember member : projectMembers)
+        {
+            if (member.getUser().getId().equals(userId)) return member;
+        }
+        return null;
+    }
+
+    @Transactional
+    public void delete(Object o)
+    {
+        projectDao.delete(o);
+    }
     @Transactional
     public List<Project> getUserProjects(Integer id)
     {

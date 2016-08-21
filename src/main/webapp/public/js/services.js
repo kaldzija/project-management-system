@@ -20,9 +20,36 @@ angular.module('inspinia')
             return $resource(getApiUrl('/projects'))
         };
 
+        this.getProjectMembers = function () {
+            return $resource(getApiUrl('/projects/:projectId/members'))
+        };
+        
         this.editProject = function () {
             return $resource(getApiUrl('/projects'))
         };
+    }])
+    .service("userService", ['$resource', function ($resource) {
+        this.getNotifications = function () {
+            return $resource(getApiUrl('/users/notifications'))
+        };
+        this.createContact = function () {
+            return $resource(getApiUrl('/users/contacts'))
+        };
+        this.createProjectMember = function () {
+            return $resource(getApiUrl('/users/projects/members'))
+        };
+        this.getContacts = function () {
+            return $resource(getApiUrl('/users/contacts'))
+        };
+        this.getProjectMembers = function () {
+            return $resource(getApiUrl('/users/projects/:projectId'))
+        };
+        this.getOtherUsers = function () {
+            return $resource(getApiUrl('/users/other'))
+        };
+        this.resolveContact = function (notificationId, accept) {
+            return $resource(getApiUrl('/users/contacts/' + notificationId + "?accept=" + accept))
+        }
     }])
     .service("taskService", ['$resource', function ($resource) {
         this.getTask = function () {

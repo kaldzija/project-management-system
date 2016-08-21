@@ -20,6 +20,10 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             abstract: true,
             url: "/index",
             templateUrl: "public/views/common/content.html"
+        }).state('users', {
+            abstract: true,
+            url: "/index",
+            templateUrl: "public/views/common/content.html"
         })
         .state('index.main', {
             url: "/main",
@@ -40,6 +44,11 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             url: "/projects/:projectId",
             templateUrl: "public/views/projects/project_detail.html",
             data: {pageTitle: 'Project details'}
+        })
+        .state('index.project-participants', {
+            url: "/projects/:projectId/participants",
+            templateUrl: "public/views/projects/project_team.html",
+            data: {pageTitle: 'Participants'}
         })
         .state('index.task-details', {
             url: "/projects/:projectId/tasks/:taskId",
@@ -73,6 +82,16 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             url: "/register",
             templateUrl: "public/views/register/register.html",
             data: {pageTitle: 'Register', specialClass: 'gray-bg'}
+        })
+        .state('users.contacts', {
+            url: "/users/contacts",
+            templateUrl: "public/views/users/contacts_2.html",
+            data: {pageTitle: 'My contacts'}
+        })
+        .state('users.other-users', {
+            url: "/users/all",
+            templateUrl: "public/views/users/other_users.html",
+            data: {pageTitle: 'Other users'}
         })
 }
 angular

@@ -21,6 +21,9 @@ public class User
     private String socialId;
     private RoleEnum role;
     private UserStateEnum state;
+    private String aboutMe;
+    private String phone;
+    private String profession;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -132,5 +135,41 @@ public class User
     public void setState(UserStateEnum state)
     {
         this.state = state;
+    }
+
+    @Basic
+    @Column(name = "about_me", length = 2048)
+    public String getAboutMe()
+    {
+        return aboutMe;
+    }
+
+    public void setAboutMe(String aboutMe)
+    {
+        this.aboutMe = aboutMe;
+    }
+
+    @Basic
+    @Column(name = "phone", length = 20)
+    public String getPhone()
+    {
+        return phone;
+    }
+
+    public void setPhone(String phone)
+    {
+        this.phone = phone;
+    }
+
+    @Basic
+    @Column(name = "profession")
+    public String getProfession()
+    {
+        return profession;
+    }
+
+    public void setProfession(String profession)
+    {
+        this.profession = profession;
     }
 }

@@ -50,14 +50,24 @@
                         <div class="col-lg-5">
                             <dl class="dl-horizontal">
                                 <dt>Status:</dt>
-                                <dd ng-show="project.status=='ACTIVE'"><span class="label label-warning">To Do</span>
+                                <dd ng-show="task.status=='TODO'">{{'LABEL_ACTIVE'|translate}}
+                                    <a ng-click="changeStatus()"><i
+                                            class="fa fa-edit"></i></a>
+                                </dd>
+                                <dd ng-show="task.status=='IN_PROGRESS'">{{'LABEL_IN_PROGRESS'|translate}}
+                                    <a ng-click="changeStatus()"><i
+                                            class="fa fa-edit"></i></a>
+                                </dd>
+                                <dd ng-show="task.status=='COMPLETED'">{{'LABEL_COMPLETED'|translate}}
+                                    <a ng-click="changeStatus()"><i
+                                            class="fa fa-edit"></i></a>
                                 </dd>
                                 <dt>Name:</dt>
                                 <dd>{{task.name}}</dd>
                                 <dt>Created by:</dt>
                                 <dd><a class="text-navy">{{task.createdBy.displayName}}</a></dd>
                                 <dt>Assign to:</dt>
-                                <dd><a class="text-navy">{{task.user.displayName}}</a> <a class="btn btn-sm"><i
+                                <dd><a class="text-navy">{{task.user.displayName}}</a> <a><i
                                         class="fa fa-edit"></i></a></dd>
                             </dl>
                         </div>

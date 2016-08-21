@@ -23,7 +23,7 @@ public class ProjectDao extends BaseDao<Project> implements IProjectDao
     public Project getProjectWithMembers(Integer id)
     {
         String SQL = "Select p from Project p FETCH ALL PROPERTIES where p.id=:id";
-        return ((Project) getSession().createQuery(SQL).setParameter("id", 1).uniqueResult());
+        return ((Project) getSession().createQuery(SQL).setParameter("id", id).uniqueResult());
     }
 
     @Override

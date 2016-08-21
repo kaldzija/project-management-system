@@ -1,11 +1,15 @@
 package com.nwt.services;
 
 import com.nwt.dao.interfaces.IUserDao;
+import com.nwt.dao.model.Contact;
+import com.nwt.dao.model.Notification;
 import com.nwt.dao.model.User;
 import com.nwt.social.SocialTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Created by Jasmin Kaldzija on 02.08.2016..
@@ -17,9 +21,9 @@ public class UserService
     IUserDao userDao;
 
     @Transactional
-    public void saveOrUpdate(User user)
+    public void saveOrUpdate(Object object)
     {
-        userDao.saveOrUpdate(user);
+        userDao.saveOrUpdate(object);
     }
 
     @Transactional(readOnly = true)
@@ -35,8 +39,44 @@ public class UserService
     }
 
     @Transactional
+    public List<User> getAll()
+    {
+        return userDao.getAll();
+    }
+
+    @Transactional
     public User getSocialUser(String socialId, SocialTypeEnum socialType)
     {
         return userDao.getSocialUser(socialId, socialType);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Contact> getUserContacts(User user)
+    {
+        return userDao.getUserContacts(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Contact> getApprovedUserContacts(User user)
+    {
+        return userDao.getApprovedUserContacts(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Notification> getUnreadNotifications(User user)
+    {
+        return userDao.getUnreadNotifications(user);
+    }
+
+    @Transactional(readOnly = true)
+    public Notification getNotification(Integer id)
+    {
+        return userDao.getNotification(id);
+    }
+
+    @Transactional
+    public void delete(Object o)
+    {
+        userDao.delete(o);
     }
 }

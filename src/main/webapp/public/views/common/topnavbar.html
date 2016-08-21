@@ -19,44 +19,37 @@
                     <li><a ng-click="changeLanguage('bs')">Bosnian</a></li>
                 </ul>
             </li>
-            <li class="dropdown" dropdown>
+            <li class="dropdown" dropdown ng-controller="NotificationController">
                 <a class="dropdown-toggle count-info" href dropdown-toggle>
-                    <i class="fa fa-envelope"></i> <span class="label label-warning">16</span>
+                    <i class="fa fa-bell"></i> <span ng-show="notifications.length>0" class="label label-primary">{{notifications.length}}</span>
                 </a>
-                <ul class="dropdown-menu dropdown-messages">
-                    <li>
-                        <div class="dropdown-messages-box">
-                            <a ui-sref="profile" class="pull-left">
-                                <img alt="image" class="img-circle" src="public/img/default-profile.png">
-                            </a>
-
-                            <div>
-                                <small class="pull-right">46h ago</small>
-                                <strong>Mike Loreipsum</strong> started following <strong>Monica Smith</strong>. <br>
-                                <small class="text-muted">3 days ago at 7:58 pm - 10.06.2014</small>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <div class="text-center link-block">
-                            <a ui-sref="mailbox.inbox">
-                                <i class="fa fa-envelope"></i> <strong>Read All Messages</strong>
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <li class="dropdown" dropdown>
-                <a class="dropdown-toggle count-info" href dropdown-toggle>
-                    <i class="fa fa-bell"></i> <span class="label label-primary">8</span>
-                </a>
-                <ul class="dropdown-menu dropdown-alerts">
-                    <li>
+                <ul class="dropdown-menu dropdown-alerts" style="width: 400px;">
+                    <li ng-repeat="notification in notifications">
                         <a ui-sref="inbox">
-                            <div>
-                                <i class="fa fa-envelope fa-fw"></i> You have 16 messages
-                                <span class="pull-right text-muted small">4 minutes ago</span>
+                            <div ng-show="notification.type=='CONTACT'" style="height: 40px;">
+                                <img alt="image" style="width: 32px;height: 32px;" class="img-circle"
+                                     src="public/img/default-profile.png">
+                                <span>
+                                    {{notification.contact.sender.displayName}}
+                                    {{'SENT_YOU_CONTACT_REQUEST'|translate}}
+                                    <a ng-click="resolveContact(notification.id,'true')" style="padding-top: 7px;"
+                                       class="pull-right"><i class="glyphicon glyphicon-ok"></i></a>
+                                    <a ng-click="resolveContact(notification.id,'false')"
+                                       style="padding-top: 7px;padding-right: 0px;" class="pull-right"><i
+                                            class="glyphicon glyphicon-remove"></i></a>
+                                </span>
+                                <span class="pull-right text-muted small">{{notification.created| date:'dd.MM.yyyy HH:mm'}}</span>
+                            </div>
+                            <!--<div>-->
+                            <!--<i class="fa fa-envelope fa-fw"></i> You have 16 messages-->
+                            <!--<span class="pull-right text-muted small">4 minutes ago</span>-->
+                            <!--</div>-->
+                        </a>
+                    </li>
+                    <li ng-if="notifications.length==0 || showNoNotificationMessage">
+                        <a ui-sref="inbox">
+                            <div style="text-align: center;">
+                                {{'MESSAGE_NO_NOTIFICATIONS'| translate}}
                             </div>
                         </a>
                     </li>
@@ -64,11 +57,29 @@
                     <li>
                         <div class="text-center link-block">
                             <a ui-sref="miscellaneous.notify">
-                                <strong>See All Alerts</strong>
+                                <strong>See All Notifications</strong>
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         </div>
                     </li>
+
+                    <!--<li>-->
+                    <!--<a ui-sref="inbox">-->
+                    <!--<div>-->
+                    <!--<i class="fa fa-envelope fa-fw"></i> You have 16 messages-->
+                    <!--<span class="pull-right text-muted small">4 minutes ago</span>-->
+                    <!--</div>-->
+                    <!--</a>-->
+                    <!--</li>-->
+                    <!--<li class="divider"></li>-->
+                    <!--<li>-->
+                    <!--<div class="text-center link-block">-->
+                    <!--<a ui-sref="miscellaneous.notify">-->
+                    <!--<strong>See All Alerts</strong>-->
+                    <!--<i class="fa fa-angle-right"></i>-->
+                    <!--</a>-->
+                    <!--</div>-->
+                    <!--</li>-->
                 </ul>
             </li>
             <li>
