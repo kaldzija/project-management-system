@@ -28,7 +28,8 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="m-b-md">
-                                <a ng-click="editTask()" class="btn btn-white btn-sm pull-right">Edit</a>
+                                <a ng-show="projectOwner.id==currentUser.id||(task.user.id==currentUser.id&&project.status=='ACTIVE')"
+                                   ng-click="editTask()" class="btn btn-primary btn-sm pull-right">Edit</a>
                                 <!--<a style="margin-right: 5px;" ui-sref="index.issue-tracker({projectId:project.id})" class="btn btn-white btn-sm pull-right">Tasks</a>-->
 
                                 <!--<div class="btn-group pull-right" style="margin-right: 5px;" dropdown>-->
@@ -51,15 +52,18 @@
                             <dl class="dl-horizontal">
                                 <dt>Status:</dt>
                                 <dd ng-show="task.status=='TODO'">{{'LABEL_ACTIVE'|translate}}
-                                    <a ng-click="changeStatus()"><i
+                                    <a ng-show="projectOwner.id==currentUser.id||(task.user.id==currentUser.id&&project.status=='ACTIVE')"
+                                       ng-click="changeStatus()"><i
                                             class="fa fa-edit"></i></a>
                                 </dd>
                                 <dd ng-show="task.status=='IN_PROGRESS'">{{'LABEL_IN_PROGRESS'|translate}}
-                                    <a ng-click="changeStatus()"><i
+                                    <a ng-show="projectOwner.id==currentUser.id||(task.user.id==currentUser.id&&project.status=='ACTIVE')"
+                                       ng-click="changeStatus()"><i
                                             class="fa fa-edit"></i></a>
                                 </dd>
                                 <dd ng-show="task.status=='COMPLETED'">{{'LABEL_COMPLETED'|translate}}
-                                    <a ng-click="changeStatus()"><i
+                                    <a ng-show="projectOwner.id==currentUser.id||(task.user.id==currentUser.id&&project.status=='ACTIVE')"
+                                       ng-click="changeStatus()"><i
                                             class="fa fa-edit"></i></a>
                                 </dd>
                                 <dt>Name:</dt>
@@ -67,8 +71,11 @@
                                 <dt>Created by:</dt>
                                 <dd><a class="text-navy">{{task.createdBy.displayName}}</a></dd>
                                 <dt>Assign to:</dt>
-                                <dd><a class="text-navy">{{task.user.displayName}}</a> <a><i
-                                        class="fa fa-edit"></i></a></dd>
+                                <dd><a class="text-navy">{{task.user.displayName}}</a>
+                                    <a ng-show="projectOwner.id==currentUser.id||(task.user.id==currentUser.id&&project.status=='ACTIVE')"
+                                       ng-click="changeAssignment()"><i
+                                            class="fa fa-edit"></i></a>
+                                </dd>
                             </dl>
                         </div>
                         <div class="col-lg-7" id="cluster_info">
@@ -102,7 +109,8 @@
                                              ng-controller="TaskCommentsController">
                                             <div class="social-comment" ng-repeat="taskComment in taskComments">
                                                 <a href="" class="pull-left">
-                                                    <img alt="image" src="public/img/default-profile.png">
+                                                    <img alt="image"
+                                                         ng-src="api/image/user/{{taskComment.comment.user.id}}">
                                                 </a>
                                                 <div class="media-body">
                                                     <a href="#">
@@ -118,7 +126,7 @@
 
                                             <div class="social-comment">
                                                 <a href="" class="pull-left">
-                                                    <img alt="image" src="public/img/default-profile.png">
+                                                    <img alt="image" ng-src="api/image/user/{{currentUser.id}}">
                                                 </a>
                                                 <div class="media-body">
                                                     <textarea ng-enter="createComment()" ng-model="newComment.content"
@@ -130,215 +138,71 @@
                                         </div>
                                     </tab>
                                     <tab heading="{{'LABEL_ATTACHMENTS'|translate}}">
-                                        <table class="table table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th>Status</th>
-                                                <th>Title</th>
-                                                <th>Start Time</th>
-                                                <th>End Time</th>
-                                                <th>Comments</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>
-                                                    <span class="label label-primary"><i class="fa fa-check"></i> Completed</span>
-                                                </td>
-                                                <td>
-                                                    Create project in webapp
-                                                </td>
-                                                <td>
-                                                    12.07.2014 10:10:1
-                                                </td>
-                                                <td>
-                                                    14.07.2014 10:16:36
-                                                </td>
-                                                <td>
-                                                    <p class="small">
-                                                        Lorem Ipsum is that it has a more-or-less normal distribution of
-                                                        letters, as opposed to using 'Content here, content here',
-                                                        making it look like readable.
-                                                    </p>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <span class="label label-primary"><i class="fa fa-check"></i> Accepted</span>
-                                                </td>
-                                                <td>
-                                                    Various versions
-                                                </td>
-                                                <td>
-                                                    12.07.2014 10:10:1
-                                                </td>
-                                                <td>
-                                                    14.07.2014 10:16:36
-                                                </td>
-                                                <td>
-                                                    <p class="small">
-                                                        Various versions have evolved over the years, sometimes by
-                                                        accident, sometimes on purpose (injected humour and the like).
-                                                    </p>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <span class="label label-primary"><i
-                                                            class="fa fa-check"></i> Sent</span>
-                                                </td>
-                                                <td>
-                                                    There are many variations
-                                                </td>
-                                                <td>
-                                                    12.07.2014 10:10:1
-                                                </td>
-                                                <td>
-                                                    14.07.2014 10:16:36
-                                                </td>
-                                                <td>
-                                                    <p class="small">
-                                                        There are many variations of passages of Lorem Ipsum available,
-                                                        but the majority have suffered alteration in some form, by
-                                                        injected humour, or randomised words which
-                                                    </p>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <span class="label label-primary"><i class="fa fa-check"></i> Reported</span>
-                                                </td>
-                                                <td>
-                                                    Latin words
-                                                </td>
-                                                <td>
-                                                    12.07.2014 10:10:1
-                                                </td>
-                                                <td>
-                                                    14.07.2014 10:16:36
-                                                </td>
-                                                <td>
-                                                    <p class="small">
-                                                        Latin words, combined with a handful of model sentence
-                                                        structures
-                                                    </p>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <span class="label label-primary"><i class="fa fa-check"></i> Accepted</span>
-                                                </td>
-                                                <td>
-                                                    The generated Lorem
-                                                </td>
-                                                <td>
-                                                    12.07.2014 10:10:1
-                                                </td>
-                                                <td>
-                                                    14.07.2014 10:16:36
-                                                </td>
-                                                <td>
-                                                    <p class="small">
-                                                        The generated Lorem Ipsum is therefore always free from
-                                                        repetition, injected humour, or non-characteristic words etc.
-                                                    </p>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <span class="label label-primary"><i
-                                                            class="fa fa-check"></i> Sent</span>
-                                                </td>
-                                                <td>
-                                                    The first line
-                                                </td>
-                                                <td>
-                                                    12.07.2014 10:10:1
-                                                </td>
-                                                <td>
-                                                    14.07.2014 10:16:36
-                                                </td>
-                                                <td>
-                                                    <p class="small">
-                                                        The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
-                                                        comes from a line in section 1.10.32.
-                                                    </p>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <span class="label label-primary"><i class="fa fa-check"></i> Reported</span>
-                                                </td>
-                                                <td>
-                                                    The standard chunk
-                                                </td>
-                                                <td>
-                                                    12.07.2014 10:10:1
-                                                </td>
-                                                <td>
-                                                    14.07.2014 10:16:36
-                                                </td>
-                                                <td>
-                                                    <p class="small">
-                                                        The standard chunk of Lorem Ipsum used since the 1500s is
-                                                        reproduced below for those interested.
-                                                    </p>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <span class="label label-primary"><i class="fa fa-check"></i> Completed</span>
-                                                </td>
-                                                <td>
-                                                    Lorem Ipsum is that
-                                                </td>
-                                                <td>
-                                                    12.07.2014 10:10:1
-                                                </td>
-                                                <td>
-                                                    14.07.2014 10:16:36
-                                                </td>
-                                                <td>
-                                                    <p class="small">
-                                                        Lorem Ipsum is that it has a more-or-less normal distribution of
-                                                        letters, as opposed to using 'Content here, content here',
-                                                        making it look like readable.
-                                                    </p>
-                                                </td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <span class="label label-primary"><i
-                                                            class="fa fa-check"></i> Sent</span>
-                                                </td>
-                                                <td>
-                                                    Contrary to popular
-                                                </td>
-                                                <td>
-                                                    12.07.2014 10:10:1
-                                                </td>
-                                                <td>
-                                                    14.07.2014 10:16:36
-                                                </td>
-                                                <td>
-                                                    <p class="small">
-                                                        Contrary to popular belief, Lorem Ipsum is not simply random
-                                                        text. It has roots in a piece of classical
-                                                    </p>
-                                                </td>
-
-                                            </tr>
-
-                                            </tbody>
-                                        </table>
+                                        <div class="input-group" style="width: 100%;">
+                                            <input type="text"
+                                                   ng-model="searchBox.value"
+                                                   placeholder="Search"
+                                                   class="input-sm form-control"/>
+                                        </div>
+                                        <div>
+                                            <table class="table table-hover issue-tracker">
+                                                <tbody>
+                                                <tr>
+                                                    <th>File name</th>
+                                                    <th>Created</th>
+                                                    <th>Uploader</th>
+                                                    <th>Size</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                                <tr ng-repeat="taskFile in taskFiles|filter:fileFilter">
+                                                    <td>
+                                                        {{taskFile.fileName}}
+                                                    </td>
+                                                    <td>
+                                                        {{taskFile.created|date:"dd.MM.yyyy HH:mm"}}
+                                                    </td>
+                                                    <td>
+                                                        {{taskFile.user.displayName}}
+                                                    </td>
+                                                    <td>
+                                                        {{convert(taskFile.size)}}
+                                                    </td>
+                                                    <td>
+                                                        <a href="api/files/task/{{taskFile.id}}/content">Download</a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <hr/>
+                                        <form ng-controller="FileUploadController">
+                                            <div class="input-group" style="width: 350px; border: 1px solid #e5e6e7;">
+                                                <input type="file" style="border: none;" class="form-control"
+                                                       file-model="files"/>
+                                                <span style="border: none;" class="input-group-addon">
+                                                    <div ng-show="showLoading"
+                                                         class="sk-spinner sk-spinner-fading-circle">
+                                                        <div class="sk-circle1 sk-circle"></div>
+                                                        <div class="sk-circle2 sk-circle"></div>
+                                                        <div class="sk-circle3 sk-circle"></div>
+                                                        <div class="sk-circle4 sk-circle"></div>
+                                                        <div class="sk-circle5 sk-circle"></div>
+                                                        <div class="sk-circle6 sk-circle"></div>
+                                                        <div class="sk-circle7 sk-circle"></div>
+                                                        <div class="sk-circle8 sk-circle"></div>
+                                                        <div class="sk-circle9 sk-circle"></div>
+                                                        <div class="sk-circle10 sk-circle"></div>
+                                                        <div class="sk-circle11 sk-circle"></div>
+                                                        <div class="sk-circle12 sk-circle"></div>
+                                                    </div>
+                                                </span>
+                                                <button class="btn btn-primary form-control"
+                                                        style="border: none;background-color: #1ab394;color: white;"
+                                                        ng-click="uploadFile('task')">{{'LABEL_UPLOAD'|translate}}
+                                                </button>
+                                                <li ng-show="false" ng-repeat="file in files">{{file.name}}</li>
+                                            </div>
+                                        </form>
                                     </tab>
 
                                 </tabset>

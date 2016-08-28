@@ -1,5 +1,7 @@
 package com.nwt.dao.interfaces;
 
+import com.nwt.dao.model.Project;
+import com.nwt.dao.model.ProjectComment;
 import com.nwt.dao.model.Task;
 import com.nwt.dao.model.TaskComment;
 
@@ -11,4 +13,6 @@ import java.util.List;
 public interface ICommentDao extends IBaseDao
 {
     List<TaskComment> getTaskComments(Task task);
+
+    List<ProjectComment> getProjectComments(Project project);
 }

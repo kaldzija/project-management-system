@@ -10,6 +10,7 @@
         'pascalprecht.translate',       // Translations
         'ngSanitize',
         'ngResource',
+        'angularFileUpload',
         'satellizer',
         'toastr'
     ])

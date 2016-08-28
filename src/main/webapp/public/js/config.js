@@ -88,23 +88,67 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: "public/views/users/contacts_2.html",
             data: {pageTitle: 'My contacts'}
         })
+        .state('users.chat', {
+            url: "/users/messages",
+            templateUrl: "public/views/users/chat_view.html",
+            data: {pageTitle: 'Messages'}
+        })
+        .state('index.project-agile', {
+            url: "/projects/:projectId/agile",
+            templateUrl: "public/views/agile/agile_board.html",
+            data: {pageTitle: 'Agile'},
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'ui.sortable',
+                            files: ['public/js/ui-sortable/sortable.js']
+                        }
+                    ]);
+                }
+            }
+        })
         .state('users.other-users', {
             url: "/users/all",
             templateUrl: "public/views/users/other_users.html",
             data: {pageTitle: 'Other users'}
+        })
+        .state('users.profile', {
+            url: "/users/veiw/:userId",
+            templateUrl: "public/views/users/user-profile.html",
+            data: {pageTitle: 'Other users'}
+        })
+        .state('users.edit', {
+            url: "/users/edit",
+            templateUrl: "public/views/users/edit-user-profile.html",
+            data: {pageTitle: 'Edit user data'},
+            resolve: {
+                loadPlugin: function ($ocLazyLoad) {
+                    return $ocLazyLoad.load([
+                        {
+                            name: 'datePicker',
+                            files: ['public/css/datapicker/angular-datapicker.css', 'public/js/datapicker/angular-datepicker.js']
+                        },
+                        {
+                            serie: true,
+                            files: ['public/js/moment/moment.min.js', 'public/js/daterangepicker/daterangepicker.js', 'public/css/daterangepicker/daterangepicker-bs3.css']
+                        }
+                    ]);
+                }
+            }
         })
 }
 angular
     .module('inspinia')
     .config(function ($authProvider) {
         $authProvider.linkedin({
-            clientId: ''
+            clientId: '77xho5nl8rffye'
         });
         $authProvider.facebook({
             clientId: '1780516158860280'
         });
         $authProvider.google({
-            clientId: ''
+            clientId: '301961595404-acb1crr9g3lctiheb4ku1u9ts1hablak.apps.googleusercontent.com'
         });
         $authProvider.twitter({
             url: '/auth/twitter'

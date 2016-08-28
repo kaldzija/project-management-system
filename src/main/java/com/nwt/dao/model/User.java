@@ -24,6 +24,8 @@ public class User
     private String aboutMe;
     private String phone;
     private String profession;
+    private Timestamp birthDate;
+    private Timestamp lastLogin;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -171,5 +173,29 @@ public class User
     public void setProfession(String profession)
     {
         this.profession = profession;
+    }
+
+    @Basic
+    @Column(name = "birth_date")
+    public Timestamp getBirthDate()
+    {
+        return birthDate;
+    }
+
+    public void setBirthDate(Timestamp birthDate)
+    {
+        this.birthDate = birthDate;
+    }
+
+    @Basic
+    @Column(name = "last_login")
+    public Timestamp getLastLogin()
+    {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Timestamp lastLogin)
+    {
+        this.lastLogin = lastLogin;
     }
 }

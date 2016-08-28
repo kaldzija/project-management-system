@@ -19,6 +19,11 @@
                     <li><a ng-click="changeLanguage('bs')">Bosnian</a></li>
                 </ul>
             </li>
+            <li ng-controller="MessagesCountController">
+                <a href="" class=" count-info" ui-sref="users.chat">
+                    <i class="fa fa-envelope"></i> <span ng-show="unread.count>0" class="label label-primary">{{unread.count}}</span>
+                </a>
+            </li>
             <li class="dropdown" dropdown ng-controller="NotificationController">
                 <a class="dropdown-toggle count-info" href dropdown-toggle>
                     <i class="fa fa-bell"></i> <span ng-show="notifications.length>0" class="label label-primary">{{notifications.length}}</span>
@@ -28,7 +33,7 @@
                         <a ui-sref="inbox">
                             <div ng-show="notification.type=='CONTACT'" style="height: 40px;">
                                 <img alt="image" style="width: 32px;height: 32px;" class="img-circle"
-                                     src="public/img/default-profile.png">
+                                     ng-src="api/image/user/{{notification.contact.sender.id}}">
                                 <span>
                                     {{notification.contact.sender.displayName}}
                                     {{'SENT_YOU_CONTACT_REQUEST'|translate}}

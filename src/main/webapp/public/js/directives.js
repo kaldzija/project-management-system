@@ -164,7 +164,17 @@ angular
                 $('.table').trigger('footable_redraw');
             }
         }
-    })
+    }).directive('fileModel', ['$parse', function ($parse) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                element.bind('change', function () {
+                    $parse(attrs.fileModel).assign(scope, element[0].files);
+                    scope.$apply();
+                });
+            }
+        };
+    }])
     .directive('ngEnter', function () {
         return function (scope, element, attrs) {
             element.bind("keydown keypress", function (event) {

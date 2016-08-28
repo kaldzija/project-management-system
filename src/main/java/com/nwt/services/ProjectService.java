@@ -3,6 +3,7 @@ package com.nwt.services;
 import com.nwt.dao.interfaces.IProjectDao;
 import com.nwt.dao.model.Project;
 import com.nwt.dao.model.ProjectMember;
+import com.nwt.dao.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,15 +38,15 @@ public class ProjectService
     }
 
     @Transactional
-    public Project getProjectWithMembers(Integer id)
+    public List<ProjectMember> getProjectMembers(Integer id)
     {
-        return projectDao.getProjectWithMembers(id);
+        return projectDao.getProjectMembers(id);
     }
 
     @Transactional
     public ProjectMember getProjectMember(Integer projectId, Integer userId)
     {
-        List<ProjectMember> projectMembers = projectDao.getProjectWithMembers(projectId).getMembers();
+        List<ProjectMember> projectMembers = getProjectMembers(projectId);
         for (ProjectMember member : projectMembers)
         {
             if (member.getUser().getId().equals(userId)) return member;
@@ -62,5 +63,11 @@ public class ProjectService
     public List<Project> getUserProjects(Integer id)
     {
         return projectDao.getUserProjects(id);
+    }
+
+    @Transactional
+    public User getProjectOwner(Integer projectId)
+    {
+        return projectDao.getProjectOwner(projectId);
     }
 }

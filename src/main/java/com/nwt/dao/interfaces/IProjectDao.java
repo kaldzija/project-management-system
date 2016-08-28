@@ -1,6 +1,8 @@
 package com.nwt.dao.interfaces;
 
 import com.nwt.dao.model.Project;
+import com.nwt.dao.model.ProjectMember;
+import com.nwt.dao.model.User;
 
 import java.util.List;
 
@@ -10,7 +12,9 @@ import java.util.List;
 public interface IProjectDao extends IBaseDao
 {
 
-    Project getProjectWithMembers(Integer id);
+    List<ProjectMember> getProjectMembers(Integer id);
 
     List<Project> getUserProjects(Integer id);
+
+    User getProjectOwner(Integer projectId);
 }

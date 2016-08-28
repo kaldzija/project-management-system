@@ -27,7 +27,8 @@
                 <div class="ibox-title">
                     <h5>Issue list</h5>
                     <div class="ibox-tools">
-                        <a href="" ng-click="openCreateTaskModal()" class="btn btn-primary btn-xs">Add new task</a>
+                        <a href="" ng-show="projectOwner.id==currentUser.id" ng-click="openCreateTaskModal()"
+                           class="btn btn-primary btn-xs">Add new task</a>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -62,7 +63,9 @@
                             <td class="project-actions">
                                 <a href="" ui-sref="index.task-details({projectId:project.id,taskId:task.id})"
                                    class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>
-                                <a ng-click="editTask(task.id)" class="btn btn-white btn-sm"><i
+                                <a ng-click="editTask(task.id)"
+                                   ng-show="projectOwner.id==currentUser.id||currentUser.id==task.user.id"
+                                   class="btn btn-white btn-sm"><i
                                         class="fa fa-pencil"></i> Edit </a>
                             </td>
                         </tr>

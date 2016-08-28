@@ -1,9 +1,7 @@
 package com.nwt.controllers;
 
-import com.nwt.dao.model.Project;
-import com.nwt.dao.model.ProjectMember;
-import com.nwt.dao.model.ProjectRoleEnum;
-import com.nwt.dao.model.ProjectStatusEnum;
+import com.nwt.dao.model.*;
+import com.nwt.services.CommentService;
 import com.nwt.services.ProjectService;
 import com.nwt.services.TaskService;
 import com.nwt.services.UserService;
@@ -27,6 +25,8 @@ public class ProjectController extends BaseController
     private TaskService taskService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CommentService commentService;
 
     @ResponseBody
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -46,7 +46,7 @@ public class ProjectController extends BaseController
     @RequestMapping(method = RequestMethod.POST)
     public Project createProject(@RequestBody Project project)
     {
-
+        project.setUpdated(getCurrentTimestamp());
         if (project.getId() != null)
         {
             projectService.saveOrUpdate(project);
@@ -70,6 +70,75 @@ public class ProjectController extends BaseController
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/members")
     public List<ProjectMember> getProjectMembers(@PathVariable(value = "id") Integer projectId)
     {
-        return projectService.getProjectWithMembers(projectId).getMembers();
+        return projectService.getProjectMembers(projectId);
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}/owner")
+    public User getProjectOwner(@PathVariable(value = "id") Integer projectId)
+    {
+        return projectService.getProjectOwner(projectId);
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.POST, value = "/{id}/comments")
+    public ProjectComment saveOrUpdateComment(@RequestBody Comment comment, @PathVariable(value = "id") Integer projectId)
+    {
+        comment.setCreated(getCurrentTimestamp());
+        comment.setUser(getCurrentUser());
+        commentService.saveOrUpdate(comment);
+
+        ProjectComment projectComment = new ProjectComment();
+        projectComment.setComment(comment);
+        projectComment.setProject(projectService.get(projectId));
+        commentService.saveOrUpdate(projectComment);
+        return projectComment;
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}/comments")
+    public List<ProjectComment> getProjectComments(@PathVariable(value = "id") Integer projectId)
+    {
+        return commentService.getProjectComments(projectService.get(projectId));
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}/percentage")
+    public ProjectCompletedPercentage getProjectCompletedPercentage(@PathVariable(value = "id") Integer projectId)
+    {
+        Integer total;
+        Integer completed = 0;
+
+        Project project = projectService.get(projectId);
+        List<Task> tasks = taskService.getProjectTasks(project);
+
+        ProjectCompletedPercentage projectCompletedPercentage = new ProjectCompletedPercentage();
+        total = tasks.size();
+        projectCompletedPercentage.setPercentage(100);
+
+        if (total.equals(0)) return projectCompletedPercentage;
+
+        for (Task task : tasks)
+        {
+            if (task.getStatus().equals(TaskStatusEnum.COMPLETED)) completed++;
+        }
+
+        projectCompletedPercentage.setPercentage(completed * 100 / total);
+        return projectCompletedPercentage;
+    }
+
+    public class ProjectCompletedPercentage
+    {
+        private Integer percentage;
+
+        public Integer getPercentage()
+        {
+            return percentage;
+        }
+
+        public void setPercentage(Integer percentage)
+        {
+            this.percentage = percentage;
+        }
     }
 }

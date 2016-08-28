@@ -21,6 +21,21 @@ public class UserController extends BaseController
     private ProjectService projectService;
 
     @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    public User getUser(@PathVariable(value = "id") Integer userId)
+    {
+        return getUserService().getUser(userId);
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.POST)
+    public User saveOrUpdate(@RequestBody User user)
+    {
+        getUserService().saveOrUpdate(user);
+        return user;
+    }
+
+    @ResponseBody
     @RequestMapping(method = RequestMethod.GET, value = "/notifications")
     public List<Notification> getUnreadNotifications()
     {
@@ -84,7 +99,7 @@ public class UserController extends BaseController
             simpleUser.setName(user.getDisplayName());
             simpleUser.setEmail(user.getEmail());
             simpleUser.setId(user.getId());
-            simpleUser.setPhone("032 456 852");
+            simpleUser.setPhone(user.getPhone());
 
             for (Contact contact : contacts)
             {
@@ -103,8 +118,29 @@ public class UserController extends BaseController
     @RequestMapping(method = RequestMethod.GET, value = "/projects/{id}")
     public List<SimpleUser> getProjectMembers(@PathVariable(value = "id") Integer projectId)
     {
+        //Potntial and real
         List<SimpleUser> simpleUsers = new ArrayList<>();
-        List<ProjectMember> projectMembers = projectService.getProjectWithMembers(projectId).getMembers();
+        List<ProjectMember> projectMembers = projectService.getProjectMembers(projectId);
+        for (ProjectMember member : projectMembers)
+        {
+            SimpleUser simpleUser = new SimpleUser();
+            simpleUser.setEmail(member.getUser().getEmail());
+            simpleUser.setId(member.getUser().getId());
+            simpleUser.setPhone(member.getUser().getPhone());
+            simpleUser.setName(member.getUser().getDisplayName());
+            simpleUser.setProjectRole(member.getRole());
+            simpleUsers.add(simpleUser);
+        }
+        return simpleUsers;
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/projects/{id}/all-users")
+    public List<SimpleUser> getAllUsersWithProjectROle(@PathVariable(value = "id") Integer projectId)
+    {
+        //Potntial and real
+        List<SimpleUser> simpleUsers = new ArrayList<>();
+        List<ProjectMember> projectMembers = projectService.getProjectMembers(projectId);
         List<User> users = getUsersFromContact(getUserService().getUserContacts(getCurrentUser()), getCurrentUser());
         for (User user : users)
         {

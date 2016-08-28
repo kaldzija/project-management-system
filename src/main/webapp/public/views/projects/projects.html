@@ -57,9 +57,9 @@
                                     </small>
                                 </td>
                                 <td class="project-completion">
-                                    <small>Completion with: 48%</small>
+                                    <small>Completion with: {{project.percentage}}%</small>
                                     <div class="progress progress-mini">
-                                        <div style="width: 48%;" class="progress-bar"></div>
+                                        <div style="width: {{project.percentage}}%;" class="progress-bar"></div>
                                     </div>
                                 </td>
                                 <!--<td class="project-people">-->
@@ -69,7 +69,7 @@
                                 <td class="project-actions">
                                     <a href="" ui-sref="index.project-details({projectId:project.id})"
                                        class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>
-                                    <a class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Edit </a>
+                                    <!--<a class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Edit </a>-->
                                 </td>
                             </tr>
                             </tbody>

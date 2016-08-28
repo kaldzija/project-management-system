@@ -42,6 +42,15 @@ public class TaskController extends BaseController
     }
 
     @ResponseBody
+    @RequestMapping(value = "/user")
+    public List<Task> getUserProjectTasks(@RequestParam(required = true, value = "projectId") Integer projectId)
+    {
+        Project project = projectService.get(projectId);
+        return taskService.getUserProjectTasks(project, getCurrentUser());
+    }
+
+
+    @ResponseBody
     @RequestMapping(method = RequestMethod.POST)
     public Task saveOrUpdate(@RequestBody Task task)
     {

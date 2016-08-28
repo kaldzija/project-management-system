@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Jasmin Kaldzija on 10.08.2016..
@@ -24,8 +22,8 @@ public class Project
     private String name;
     private String description;
     private Timestamp createdDate;
+    private Timestamp updated;
     private ProjectStatusEnum status;
-    private List<ProjectMember> members = new ArrayList<ProjectMember>();
     private String client;
     private String version;
 
@@ -91,17 +89,6 @@ public class Project
         this.status = status;
     }
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    public List<ProjectMember> getMembers()
-    {
-        return members;
-    }
-
-    public void setMembers(List<ProjectMember> members)
-    {
-        this.members = members;
-    }
-
     @Basic
     @Column(name = "client")
     public String getClient()
@@ -124,5 +111,17 @@ public class Project
     public void setVersion(String version)
     {
         this.version = version;
+    }
+
+    @Basic
+    @Column(name = "updated")
+    public Timestamp getUpdated()
+    {
+        return updated;
+    }
+
+    public void setUpdated(Timestamp updated)
+    {
+        this.updated = updated;
     }
 }

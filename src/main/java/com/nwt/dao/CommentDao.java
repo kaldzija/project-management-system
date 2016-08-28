@@ -1,9 +1,7 @@
 package com.nwt.dao;
 
 import com.nwt.dao.interfaces.ICommentDao;
-import com.nwt.dao.model.Comment;
-import com.nwt.dao.model.Task;
-import com.nwt.dao.model.TaskComment;
+import com.nwt.dao.model.*;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -26,5 +24,11 @@ public class CommentDao extends BaseDao<Comment> implements ICommentDao
     public List<TaskComment> getTaskComments(Task task)
     {
         return getSession().createCriteria(TaskComment.class).add(Restrictions.eq("task", task)).list();
+    }
+
+    @Override
+    public List<ProjectComment> getProjectComments(Project project)
+    {
+        return getSession().createCriteria(ProjectComment.class).add(Restrictions.eq("project", project)).list();
     }
 }

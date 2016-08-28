@@ -4,6 +4,7 @@ import com.nwt.dao.interfaces.IBaseDao;
 import com.nwt.dao.interfaces.ITaskDao;
 import com.nwt.dao.model.Project;
 import com.nwt.dao.model.Task;
+import com.nwt.dao.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,5 +30,11 @@ public class TaskService extends BaseService<Task>
     public List<Task> getProjectTasks(Project project)
     {
         return taskDao.getProjectTasks(project);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Task> getUserProjectTasks(Project project, User user)
+    {
+        return taskDao.getUserProjectTasks(project, user);
     }
 }

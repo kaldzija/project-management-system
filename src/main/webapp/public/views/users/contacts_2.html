@@ -16,9 +16,9 @@
         <div class="col-lg-3" ng-repeat="contact in contacts">
             <div ng-show="currentUser.id==contact.receiver.id" class="contact-box center-version">
 
-                <a href="">
+                <a href="" ui-sref="users.profile({userId:contact.sender.id})" style="height: 185px;">
 
-                    <img alt="image" class="img-circle" src="api/image/user/{{contact.sender.id}}">
+                    <img alt="image" class="img-circle" ng-src="api/image/user/{{contact.sender.id}}">
 
 
                     <h3 class="m-b-xs"><strong>{{contact.sender.displayName}}</strong></h3>
@@ -32,7 +32,7 @@
                 </a>
                 <div class="contact-box-footer">
                     <div class="m-t-xs btn-group">
-                        <a class="btn btn-xs btn-white">{{'LABEL_VIEW'|translate}} </a>
+                        <a href="" ui-sref="users.profile({userId:contact.sender.id})" class="btn btn-xs btn-white">{{'LABEL_VIEW'|translate}} </a>
                         <a class="btn btn-xs btn-white">{{'LABEL_REMOVE'|translate}} </a>
                     </div>
                 </div>
@@ -41,9 +41,9 @@
 
             <div ng-show="currentUser.id==contact.sender.id" class="contact-box center-version">
 
-                <a href="profile.html">
+                <a href="" ui-sref="users.profile({userId:contact.receiver.id})" style="height: 185px;">
 
-                    <img alt="image" class="img-circle" src="api/image/user/{{contact.receiver.id}}">
+                    <img alt="image" class="img-circle" ng-src="api/image/user/{{contact.receiver.id}}">
 
 
                     <h3 class="m-b-xs"><strong>{{contact.receiver.displayName}}</strong></h3>
@@ -57,7 +57,7 @@
                 </a>
                 <div class="contact-box-footer">
                     <div class="m-t-xs btn-group">
-                        <a class="btn btn-xs btn-white">{{'LABEL_VIEW'|translate}} </a>
+                        <a href="" ui-sref="users.profile({userId:contact.receiver.id})" class="btn btn-xs btn-white">{{'LABEL_VIEW'|translate}} </a>
                         <a class="btn btn-xs btn-white">{{'LABEL_REMOVE'|translate}} </a>
                     </div>
                 </div>

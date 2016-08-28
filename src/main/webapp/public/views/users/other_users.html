@@ -33,7 +33,7 @@
                                 <table class="table table-striped table-hover">
                                     <tbody>
                                     <tr ng-repeat="user in users|filter:filterUsers">
-                                        <td class="client-avatar"><img alt="image" src="api/image/user/{{user.id}}">
+                                        <td class="client-avatar"><img alt="image" ng-src="api/image/user/{{user.id}}">
                                         </td>
                                         <td><a ng-click="client = 1" class="client-link">{{user.name}}</a></td>
                                         <td class="contact-type"><i class="fa fa-envelope"> </i></td>

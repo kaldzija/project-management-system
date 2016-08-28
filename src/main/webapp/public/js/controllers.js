@@ -93,7 +93,19 @@ function TranslateController($translate, $scope) {
 }
 
 function ProjectController($scope, $modal, projectService) {
-    $scope.projects = projectService.getProjects().query();
+    $scope.loadProjects = function () {
+        projectService.getProjects().query().$promise.then(function (result) {
+            $scope.projects = result;
+            if ($scope.projects.length != null) {
+                $scope.projects.forEach(function (entry) {
+                    projectService.getProjectPercentage().get({id: entry.id}).$promise.then(function (result) {
+                        entry.percentage = result.percentage;
+                    });
+                });
+            }
+        });
+    };
+    $scope.loadProjects();
     $scope.searchBox = null;
 
     var modalInstance = {
@@ -117,7 +129,7 @@ function ProjectController($scope, $modal, projectService) {
     };
 
     $scope.refresh = function () {
-        $scope.projects = projectService.getProjects().query();
+        $scope.loadProjects();
         $scope.searchBox = null;
     }
 }
@@ -158,13 +170,34 @@ function NavigationHelpController($scope, $stateParams) {
 }
 function ProjectDetailsController($scope, $stateParams, projectService, $modal) {
     $scope.projectMembers = projectService.getProjectMembers().query({projectId: $stateParams.projectId});
+    $scope.projectOwner = projectService.getProjectOwner().get({projectId: $stateParams.projectId});
+    $scope.otherInformations = {};
+    $scope.projectFiles = projectService.getProjectFiles().query({projectId: $stateParams.projectId});
+    $scope.$on('newProjectDocumentUploaded', function (event, args) {
+        $scope.projectFiles.push(args);
+    });
+
+    $scope.searchBox = {};
+    $scope.searchBox.value = null;
+    $scope.fileFilter = function (element) {
+        if ($scope.searchBox.value == null)
+            return true;
+        return (element.fileName.toUpperCase().match($scope.searchBox.value.toUpperCase()) ? true : false);
+    };
+
+    $scope.convert = function (bytes) {
+        if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+        var precision = 2;
+        if (typeof precision === 'undefined') precision = 1;
+        var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+            number = Math.floor(Math.log(bytes) / Math.log(1024));
+        return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number]
+    };
+    
     projectService.getProject().get({id: $stateParams.projectId}).$promise.then(function (result) {
         $scope.project = result;
-        $scope.project.members.forEach(function (member) {
-            if (member.role == 'OWNER') {
-                $scope.projectOwner = member.user;
-                return;
-            }
+        projectService.getProjectPercentage().get({id: result.id}).$promise.then(function (resultPercentage) {
+            $scope.otherInformations.percentage = resultPercentage.percentage;
         });
     });
     $scope.editProject = function () {
@@ -184,6 +217,7 @@ function ProjectDetailsController($scope, $stateParams, projectService, $modal) 
             //Fake parameter
             if (result == 'save') {
                 $scope.project = projectService.getProject().get({id: $stateParams.projectId});
+
             }
         });
     };
@@ -256,6 +290,7 @@ function ModalCreateTaskController($scope, $modalInstance, taskService, project)
 
 function TasksController($scope, $modal, $stateParams, projectService, taskService) {
     $scope.project = projectService.getProject().get({id: $stateParams.projectId});
+    $scope.projectOwner = projectService.getProjectOwner().get({projectId: $stateParams.projectId});
     $scope.tasks = taskService.getProjectTasks().query({projectId: $stateParams.projectId});
     var createTaskModal = {
         templateUrl: 'public/views/tasks/modals/create_task.html',
@@ -316,7 +351,12 @@ function TasksController($scope, $modal, $stateParams, projectService, taskServi
 
 function TaskDetailController($scope, $modal, $stateParams, projectService, taskService) {
     $scope.project = projectService.getProject().get({id: $stateParams.projectId});
+    $scope.projectOwner = projectService.getProjectOwner().get({projectId: $stateParams.projectId});
     $scope.task = taskService.getTask().get({id: $stateParams.taskId});
+    $scope.taskFiles = taskService.getTaskFiles().query({taskId: $stateParams.taskId});
+    $scope.$on('newTaskDocumentUploaded', function (event, args) {
+        $scope.taskFiles.push(args);
+    });
 
     $scope.editTask = function () {
         var editTaskModal = {
@@ -337,8 +377,15 @@ function TaskDetailController($scope, $modal, $stateParams, projectService, task
                 $scope.task = taskService.getTask().get({id: $stateParams.taskId});
             }
         });
-    }
-
+    };
+    $scope.searchBox = {};
+    $scope.searchBox.value = null;
+    $scope.fileFilter = function (element) {
+        if ($scope.searchBox.value == null)
+            return true;
+        return (element.fileName.toUpperCase().match($scope.searchBox.value.toUpperCase()) ? true : false);
+    };
+    
     $scope.changeStatus = function () {
         var editTaskModal = {
             templateUrl: 'public/views/tasks/modals/task_status.html',
@@ -358,12 +405,45 @@ function TaskDetailController($scope, $modal, $stateParams, projectService, task
                 $scope.task = taskService.getTask().get({id: $stateParams.taskId});
             }
         });
+    };
+
+    $scope.changeAssignment = function () {
+        var editTaskModal = {
+            templateUrl: 'public/views/tasks/modals/task_assign.html',
+            controller: ModalEditTaskController,
+            resolve: {
+                task: function () {
+                    return $scope.task;
+                }
+            }
+        };
+
+        $modal.open(editTaskModal).result.then(function (result) {
+            //Fake parameter
+        }, function (result) {
+            //Fake parameter
+            if (result == 'save') {
+                $scope.task = taskService.getTask().get({id: $stateParams.taskId});
+            }
+        });
+    };
+
+    $scope.convert = function (bytes) {
+        if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+        var precision = 2;
+        if (typeof precision === 'undefined') precision = 1;
+        var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+            number = Math.floor(Math.log(bytes) / Math.log(1024));
+        return (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision) + ' ' + units[number]
     }
+};
 
-}
-
-function ModalEditTaskController($scope, $modalInstance, taskService, task) {
+function ModalEditTaskController($scope, $modalInstance, userService, $stateParams, taskService, task) {
     $scope.task = jQuery.extend(true, {}, task);
+    $scope.isSelected = function (id1, id2) {
+        return id1 == id2;
+    };
+    $scope.projectUsers = userService.getProjectMembers().query({projectId: $stateParams.projectId});
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
@@ -393,6 +473,69 @@ function TaskCommentsController($scope, $stateParams, taskService) {
             function (error, status) {
 
             });
+    }
+}
+
+function ProjectCommentsController($scope, $stateParams, projectService) {
+    $scope.projectId = $stateParams.projectId;
+    $scope.newComment = {content: null};
+    $scope.projectComments = projectService.getProjectComments().query({id: $scope.projectId});
+    $scope.createComment = function () {
+        projectService.saveOrUpdateComment($scope.projectId).save($scope.newComment,
+            function (resp, headers) {
+                // $scope.taskComments=taskService.getTaskComments().query({id:$scope.taskId});
+                $scope.projectComments.push(resp);
+                $scope.newComment = {content: null};
+            },
+            function (error, status) {
+
+            });
+    }
+}
+
+
+function UsersDetailsController($scope, $stateParams, userService) {
+    $scope.user = userService.getUser().get({userId: $stateParams.userId});
+}
+
+function EditUserDataController($scope, $rootScope, $stateParams, userService, $http) {
+    $scope.user = userService.getUser().get({userId: $rootScope.currentUser.id});
+
+    $scope.update = function () {
+        userService.saveOrUpdate().save($scope.user,
+            function (resp, headers) {
+                $scope.user = resp;
+            },
+            function (error, status) {
+
+            });
+    };
+
+    $scope.cancel = function () {
+        $scope.user = userService.getUser().get({userId: $rootScope.currentUser.id});
+    };
+
+
+    $scope.uploadImage = function () {
+        if ($scope.files == null)
+            return;
+        var fd = new FormData();
+        console.log($scope.files);
+        angular.forEach($scope.files, function (file) {
+            fd.append('file', file);
+        });
+        $scope.files = null;
+        $scope.showLoading = true;
+        $http.post('/api/image/user/' + $scope.user.id, fd,
+            {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            }).success(function (d) {
+            angular.element("input[type='file']").val(null);
+            $scope.showLoading = false;
+        })
+
+
     }
 }
 
@@ -437,7 +580,7 @@ function FindContactController($scope, userService, $translate, toastr) {
 }
 function ProjectUsersController($scope, $stateParams, userService, $translate, toastr) {
     $scope.projectId = $stateParams.projectId;
-    $scope.users = userService.getProjectMembers().query({projectId: $scope.projectId});
+    $scope.users = userService.getUserWithProjectRole().query({projectId: $scope.projectId});
     $scope.searchBox = null;
     $scope.filterUsers = function (element) {
         if ($scope.searchBox == null)
@@ -458,7 +601,7 @@ function ProjectUsersController($scope, $stateParams, userService, $translate, t
             function (error, status) {
 
             });
-    }
+    };
 
     $scope.removeUser = function (user) {
         userService.createProjectMember().remove({userId: user.id, projectId: $scope.projectId},
@@ -478,6 +621,200 @@ function ContactsController($scope, userService, $translate, toastr) {
 
     $scope.contacts = userService.getContacts().query();
 }
+
+function TaskFileUploadControllerTest($scope, userService, $translate, toastr, FileUploader, $auth, task, $http) {
+
+    $scope.contacts = userService.getContacts().query();
+
+    var uploader = $scope.uploader = new FileUploader({
+        url: '/api/files/task',
+        headers: {"Authorization": "Bearer " + $auth.getToken()},
+        formData: [{}],
+        type: 'post'
+    });
+
+    // FILTERS
+
+    uploader.filters.push({
+        name: 'customFilter',
+        fn: function (item /*{File|FileLikeObject}*/, options) {
+            return this.queue.length < 10;
+        }
+    });
+
+    // CALLBACKS
+
+
+    uploader.onCompleteItem = function (fileItem, response, status, headers) {
+        console.info('onCompleteItem', fileItem, response, status, headers);
+        console.log(response);
+    };
+
+    $scope.upload = function () {
+        uploader.onBeforeUploadItem = function (item) {
+            item.url = '/api/files/task';
+        };
+
+        uploader.url = '/api/files/task';
+        uploader.uploadAll();
+    };
+
+    $scope.uploadFile = function () {
+        var fd = new FormData();
+        console.log($scope.files);
+        angular.forEach($scope.files, function (file) {
+            fd.append('file', file);
+        });
+        $http.post('http://localhost:8080/api/files/task', fd,
+            {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            }).success(function (d) {
+            console.log(d);
+        })
+
+
+    }
+}
+
+function FileUploadController($scope, taskService, $stateParams, $http) {
+    $scope.uploadFile = function (type) {
+        var typePath = '';
+        var emiter = '';
+        if (type == 'project') {
+            typePath = 'project/' + $stateParams.projectId;
+            emiter = 'newProjectDocumentUploaded';
+        }
+        else {
+            emiter = 'newTaskDocumentUploaded';
+            typePath = 'task/' + $stateParams.taskId;
+        }
+
+        if ($scope.files == null)
+            return;
+        var fd = new FormData();
+        console.log($scope.files);
+        angular.forEach($scope.files, function (file) {
+            fd.append('file', file);
+        });
+        $scope.files = null;
+        $scope.showLoading = true;
+        $http.post('/api/files/' + typePath, fd,
+            {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            }).success(function (d) {
+            angular.element("input[type='file']").val(null);
+            $scope.$emit(emiter, d);
+            $scope.showLoading = false;
+        })
+
+    }
+}
+
+function AgileController($scope, projectService, taskService, $stateParams) {
+    $scope.todoList = [];
+    $scope.inProgressList = [];
+    $scope.completedList = [];
+    $scope.projectId = $stateParams.projectId;
+    taskService.getUserProjectTasks().query({projectId: $stateParams.projectId}).$promise.then(function (result) {
+        $scope.tasks = result;
+        if ($scope.tasks.length != null) {
+            $scope.tasks.forEach(function (entry) {
+                switch (entry.status) {
+                    case "TODO":
+                        $scope.todoList.push(entry);
+                        break;
+                    case "IN_PROGRESS":
+                        $scope.inProgressList.push(entry);
+                        break;
+                    case "COMPLETED":
+                        $scope.completedList.push(entry);
+                        break;
+                }
+            });
+        }
+    });
+
+    projectService.getProject().get({id: $stateParams.projectId}).$promise.then(function (result) {
+        $scope.project = result;
+        $scope.sortableOptions = {
+            connectWith: result.status == 'ACTIVE' ? ".connectList" : "",
+            receive: function (event, ui) {
+                $scope.target = $(this)[0].id;
+            },
+            stop: function (event, ui) {
+                var list;
+                switch ($scope.target) {
+                    case "TODO":
+                        list = $scope.todoList;
+                        break;
+                    case "IN_PROGRESS":
+                        list = $scope.inProgressList;
+                        break;
+                    case "COMPLETED":
+                        list = $scope.completedList;
+                }
+                var index;
+                var task = ui.item.sortable.model;
+                for (i = 0; i < list.length; i++) {
+                    if (list[i].id == task.id) {
+                        index = i;
+                        break;
+                    }
+                }
+                taskService.getTask().get({id: task.id}).$promise.then(function (result) {
+                    result.status = $scope.target;
+                    taskService.saveOrUpdate().save(result);
+                });
+            }
+        };
+    });
+}
+
+function MessagesController($scope, $rootScope, messageService) {
+    $scope.newMessage = "";
+    messageService.getUsers().query().$promise.then(function (result) {
+        $scope.users = result;
+        if ($scope.users.length > 0) {
+            $scope.selectedUser = $scope.users[0];
+            messageService.getMessages().query({userId: $scope.selectedUser.id}).$promise.then(function (messages) {
+                $scope.messages = messages;
+            });
+        }
+
+    });
+    $scope.select = function (user) {
+        $scope.selectedUser = user;
+        messageService.getMessages().query({userId: $scope.selectedUser.id}).$promise.then(function (messages) {
+            $scope.messages = messages;
+        });
+    };
+
+    $scope.send = function () {
+        var message = {content: $scope.newMessage, toUser: {id: $scope.selectedUser.id}};
+        messageService.save().save(message,
+            function (resp, headers) {
+                $scope.messages.push(resp);
+                $scope.newMessage = ""
+            },
+            function (error, status) {
+
+            });
+    }
+}
+
+function MessagesCountController($scope, $timeout, messageService) {
+    $scope.unread = messageService.getUnread().get();
+
+    (function refresh() {
+        messageService.getUnread().get().$promise.then(function (result) {
+            $scope.unread = result;
+            $timeout(refresh, 5000);
+        })
+    })();
+
+}
 angular
     .module('inspinia')
     .controller('RegisterController', ['$scope', '$auth', '$translate', 'toastr', '$state', RegisterController])
@@ -488,6 +825,7 @@ angular
     .controller('NavigationHelpController', NavigationHelpController)
     .controller('TasksController', TasksController)
     .controller('TaskDetailController', TaskDetailController)
+    .controller('ProjectCommentsController', ProjectCommentsController)
     .controller('TaskCommentsController', TaskCommentsController)
     .controller('ModalCreateTaskController', ModalCreateTaskController)
     .controller('ModalEditTaskController', ModalEditTaskController)
@@ -495,4 +833,11 @@ angular
     .controller('ContactsController', ContactsController)
     .controller('FindContactController', FindContactController)
     .controller('ProjectUsersController', ProjectUsersController)
+    .controller('ProjectUsersController', ProjectUsersController)
+    .controller('FileUploadController', FileUploadController)
+    .controller('UsersDetailsController', UsersDetailsController)
+    .controller('EditUserDataController', EditUserDataController)
+    .controller('AgileController', AgileController)
+    .controller('MessagesController', MessagesController)
+    .controller('MessagesCountController', MessagesCountController)
     .controller('MainCtrl', ['$scope', '$rootScope', '$auth', '$location', '$state', '$stateParams', MainCtrl]);

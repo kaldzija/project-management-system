@@ -1,9 +1,7 @@
 package com.nwt.services;
 
 import com.nwt.dao.interfaces.ICommentDao;
-import com.nwt.dao.model.Comment;
-import com.nwt.dao.model.Task;
-import com.nwt.dao.model.TaskComment;
+import com.nwt.dao.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,5 +27,11 @@ public class CommentService extends BaseService<Comment>
     public List<TaskComment> getTaskComments(Task task)
     {
         return getDao().getTaskComments(task);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProjectComment> getProjectComments(Project project)
+    {
+        return getDao().getProjectComments(project);
     }
 }
