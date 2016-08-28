@@ -1,0 +1,100 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>{{'USER_PROFILE'|translate}}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="index.html">Home</a>
+            </li>
+            <li class="active">
+                <strong>{{'USER_PROFILE'|translate}}</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="wrapper wrapper-content  animated fadeInRight" ng-controller="UsersDetailsController">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div ng-show="client == 1" ng-init="client = 1">
+                        <div class="row m-b-lg">
+                            <div class="col-lg-6 text-center">
+                                <h2>{{user.displayName}}</h2>
+
+                                <div class="m-b-sm">
+                                    <img alt="image" style="width: 40%;height: 40%;" class="img-circle"
+                                         src="api/image/user/{{user.id}}">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <strong>
+                                    {{'LABEL_ABOUT_ME'|translate}}
+                                </strong>
+
+                                <p>
+                                    {{user.aboutMe}}
+                                </p>
+                                <!--<button type="button" class="btn btn-primary btn-sm btn-block"><i-->
+                                <!--class="fa fa-envelope"></i> Send Message-->
+                                <!--</button>-->
+                            </div>
+                        </div>
+                        <strong>Last activity</strong>
+                        <div class="row">
+                            <div class="client-detail col-lg-6">
+                                <div class="full-height-scroll" full-scroll>
+
+                                    <ul class="list-group clear-list">
+                                        <li class="list-group-item fist-item">
+                                            <span class="pull-right">{{user.displayName}}</span>
+                                            {{'LABEL_NAME'|translate}}
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="pull-right">{{user.profession}}</span>
+                                            {{'LABEL_PROFESSION'|translate}}
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="pull-right">{{user.phone}}</span>
+                                            {{'PHONE'|translate}}{{'LABEL_PROFESSION'|translate}}
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="pull-right">{{user.email}}</span>
+                                            {{'EMAIL'|translate}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="client-detail col-lg-6">
+                                <div class="full-height-scroll" full-scroll>
+                                    <ul class="list-group clear-list">
+                                        <li class="list-group-item fist-item">
+                                            <span class="pull-right">{{user.lastLogin|date:"dd.MM.yyyy HH:mm"}}</span>
+                                            {{'LAST_LOGIN'|translate}}
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="pull-right">{{user.birthDate|date:"dd.MM.yyyy"}}</span>
+                                            {{'BIRTH_DATE'|translate}}
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="pull-right">{{user.registeredDate|date:"dd.MM.yyyy HH:mm"}}</span>
+                                            {{'LABEL_REG_DATE'|translate}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<strong>Notes</strong>-->
+                        <!--<p>-->
+                        <!--Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod-->
+                        <!--tempor incididunt ut labore et dolore magna aliqua.-->
+                        <!--</p>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

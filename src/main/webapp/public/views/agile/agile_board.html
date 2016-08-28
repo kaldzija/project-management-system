@@ -1,0 +1,96 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10" ng-controller="NavigationHelpController">
+        <h2>Agile board</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a ui-sref="index.main">Home</a>
+            </li>
+            <li>
+                <a ui-sref="index.projects">Project list</a>
+            </li>
+            <li>
+                <a ui-sref="index.project-details({projectId:projectId})">Project details</a>
+            </li>
+            <li class="active">
+                <strong>Agile board</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="wrapper wrapper-content  animated fadeInRight" ng-controller="AgileController">
+
+    <div class="row" style="background-color: white;">
+        <div class="col-lg-4">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <h3>To-do</h3>
+                    <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list</p>
+
+                    <!--<div class="input-group">-->
+                    <!--<input type="text" placeholder="Add new task. " class="input input-sm form-control">-->
+                    <!--<span class="input-group-btn">-->
+                    <!--<button type="button" class="btn btn-sm btn-white"> <i class="fa fa-plus"></i> Add task</button>-->
+                    <!--</span>-->
+                    <!--</div>-->
+                    <ul id="TODO" ui-sortable="sortableOptions" class="sortable-list connectList agile-list"
+                        ng-model="todoList">
+                        <li class="success-element" ng-repeat="task in todoList">
+                            <a href="" class="text-navy"
+                               ui-sref="index.task-details({projectId:projectId,taskId:task.id})"> {{task.name}}</a>
+                            <div class="agile-detail">
+                                <a href="" ui-sref="users.profile({userId:task.createdBy.id})"
+                                   class=" pull-right btn btn-xs btn-white">{{task.createdBy.displayName}}</a>
+                                <i class="fa fa-clock-o"></i> {{task.created|date:"dd.MM.yyyy HH:mm"}}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <h3>In Progress</h3>
+                    <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list</p>
+                    <ul id="IN_PROGRESS" ui-sortable="sortableOptions" class="sortable-list connectList agile-list"
+                        ng-model="inProgressList">
+                        <li class="success-element" ng-repeat="task in inProgressList">
+                            <a href="" class="text-navy"
+                               ui-sref="index.task-details({projectId:projectId,taskId:task.id})"> {{task.name}}</a>
+                            <div class="agile-detail">
+                                <a href="" ui-sref="users.profile({userId:task.createdBy.id})"
+                                   class=" pull-right btn btn-xs btn-white">{{task.createdBy.displayName}}</a>
+                                <i class="fa fa-clock-o"></i> {{task.created|date:"dd.MM.yyyy HH:mm"}}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <h3>Completed</h3>
+                    <p class="small"><i class="fa fa-hand-o-up"></i> Drag task between list</p>
+                    <ul id="COMPLETED" ui-sortable="sortableOptions" class="sortable-list connectList agile-list"
+                        ng-model="completedList">
+                        <li class="success-element" ng-repeat="task in completedList">
+                            <a href="" class="text-navy"
+                               ui-sref="index.task-details({projectId:projectId,taskId:task.id})">
+                                {{task.name|limitTo:20}}{{task.name.length>20?'...':''}}</a>
+                            <div class="agile-detail">
+                                <a href="" ui-sref="users.profile({userId:task.createdBy.id})"
+                                   class=" pull-right btn btn-xs btn-white">{{task.createdBy.displayName}}</a>
+                                <i class="fa fa-clock-o"></i> {{task.created|date:"dd.MM.yyyy HH:mm"}}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

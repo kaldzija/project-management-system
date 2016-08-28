@@ -1,0 +1,24 @@
+<div class="inmodal">
+    <div class="modal-header">
+        <h4 class="modal-title">{{'LABEL_CHANGE_SATUS'|translate}}</h4>
+        <!--<small class="font-bold">{{'MESSAGE_FILL_ALL_FIELDS'|translate}}</small>-->
+    </div>
+    <div class="modal-body">
+        <div>
+            <div class="row">
+                <form>
+                    <input type="file" file-model="files"/>
+                    <button ng-click="uploadFile()">upload me</button>
+                    <li ng-repeat="file in files">{{file.name}}</li>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-white" ng-click="cancel()">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="upload()">Save changes</button>
+    </div>
+</div>
+
