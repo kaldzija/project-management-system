@@ -1,0 +1,125 @@
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10" ng-controller="NavigationHelpController">
+        <h2>{{'USERS'|translate}}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a ui-sref="index.main">Home</a>
+            </li>
+            <li class="active">
+                <strong>{{'USERS'|translate}}</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+<div class="wrapper wrapper-content  animated fadeInRight" ng-controller="AdminUsersController">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>{{'USERS'|translate}}</h5>
+                </div>
+                <div class="table-responsive ibox-content">
+                    <!--<input type="text" class="form-control input-sm m-b-xs" id="filter"-->
+                    <!--placeholder="Search in table">-->
+
+                    <table st-table="usersTable" st-safe-src="users" class="table table-hover table-striped">
+                        <thead>
+                        <tr class="st-sort-header-column">
+                            <th st-sort="state">{{'LABEL_STATUS'|translate}}</th>
+                            <th st-sort-default="default" st-sort="displayName">{{'LABEL_NAME'|translate}}</th>
+                            <th st-sort="email">{{'EMAIL'|translate}}</th>
+                            <th st-sort="socialType">{{'TYPE'|translate}}</th>
+                            <th st-sort="role">{{'ROLE'|translate}}</th>
+                            <th style="text-align: center;">{{'CHANGE'|translate}}</th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <select name="state"
+                                        class="form-control input-sm"
+                                        style="font-weight: normal;"
+                                        st-search="state">
+                                    <option value="">{{'ALL' | translate}}</option>
+                                    <option ng-repeat="row in users | unique:'state'"
+                                            value="{{row.state}}">
+                                        {{row.state|translate}}
+                                    </option>
+                                </select>
+                            </th>
+                            <th>
+                                <input type="text" st-search="displayName" placeholder="{{'LABEL_NAME'|translate}}"
+                                       class="input-sm form-control">
+                            </th>
+                            <th>
+                                <input type="text" st-search="email" placeholder="{{'EMAIL'|translate}}"
+                                       class="input-sm form-control">
+                            </th>
+                            <th>
+                                <select name="socialType"
+                                        class="form-control input-sm"
+                                        style="font-weight: normal;"
+                                        st-search="socialType">
+                                    <option value="">{{'ALL' | translate}}</option>
+                                    <option ng-repeat="row in users | unique:'socialType'"
+                                            value="{{row.socialType}}">
+                                        {{row.socialType==null? 'USER_TYPE_NONE':row.socialType|translate}}
+                                    </option>
+                                </select>
+                            </th>
+                            <th>
+                                <select name="role"
+                                        class="form-control input-sm"
+                                        style="font-weight: normal;"
+                                        st-search="role">
+                                    <option value="">{{'ALL' | translate}}</option>
+                                    <option ng-repeat="row in users | unique:'role'"
+                                            value="{{row.role}}">
+                                        {{row.role|translate}}
+                                    </option>
+                                </select>
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="user in usersTable track by user.id" foo-repeat-done>
+                            <td>
+                                <span style="display: block;font-size: 12px;"
+                                      class="label {{user.state=='ACTIVE'?'label-primary':'label-danger'}}">
+                                    {{user.state|translate}}
+                                </span>
+                            </td>
+                            <td>{{user.displayName}}</td>
+                            <td>{{user.email}}</td>
+                            <td>{{user.socialType==null? 'USER_TYPE_NONE':user.socialType|translate}}</td>
+                            <td>{{user.role|translate}}</td>
+                            <td class="project-actions">
+                                <a href="" ng-click="changeStatus(user)"
+                                   class="btn btn-primary btn-sm">{{'LABEL_STATUS'|translate}}</a>
+                                <a href="" ng-click="changeRole(user)"
+                                   class="btn btn-primary btn-sm">{{'ROLE'|translate}}</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr ng-if="usersTable.length == 0">
+                            <td colspan="4" class="text-center no-data">
+                                <div>{{'NO_DATA' | translate}}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="4"></div>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
