@@ -32,14 +32,42 @@
 
         <p style="margin-top: 5px;">or</p>
 
-        <form class="m-t" style="margin-top: 0px!important;" role="form">
+        <form id="loginForm" name="loginForm" class="m-t" style="margin-top: 0px!important;" role="form" novalidate>
             <div class="form-group">
-                <input type="email" class="form-control" placeholder="Username" ng-model="loginData.email" required="">
+                <input type="email"
+                       class="form-control"
+                       placeholder="{{'EMAIL'|translate}}"
+                       name="email"
+                       ng-pattern="/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/"
+                       ng-model="loginData.email"
+                       required>
+                <small class="text-danger"
+                       ng-if="loginForm.email.$error.required && loginForm.submitted"
+                       translate="ERROR_REQUIRED"
+                       translate-value-field="{{'EMAIL' | translate}}">
+                </small>
+                <small class="text-danger"
+                       ng-if="!loginForm.email.$error.required && loginForm.email.$error.pattern && loginForm.submitted"
+                       translate="ERROR_WRONG_FORMAT"
+                       translate-value-field="{{'EMAIL' | translate}}">
+                </small>
             </div>
             <div class="form-group">
-                <input type="password" class="form-control" placeholder="Password" required=""
+                <input type="password"
+                       class="form-control"
+                       name="password"
+                       placeholder="Password" required
                        ng-model="loginData.password">
+                <small class="text-danger"
+                       ng-if="loginForm.password.$error.required && loginForm.submitted"
+                       translate="ERROR_REQUIRED"
+                       translate-value-field="{{'PASSWORD' | translate}}">
+                </small>
             </div>
+            <small class="text-danger"
+                   ng-if="loginForm.notExist"
+                   translate="ERROR_INVALID_DATA">
+            </small>
             <button type="submit" class="btn btn-primary block full-width m-b" ng-click="login()">Login</button>
 
             <!--<a ui-sref="forgot_password">-->

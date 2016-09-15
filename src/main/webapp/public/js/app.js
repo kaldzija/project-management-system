@@ -11,8 +11,10 @@
         'ngSanitize',
         'ngResource',
         'angularFileUpload',
+        '19degrees.ngSweetAlert2',
         'satellizer',
-        'toastr'
+        'toastr',
+        'smart-table'
     ])
 })();
 

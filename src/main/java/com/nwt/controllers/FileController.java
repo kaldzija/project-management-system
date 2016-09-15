@@ -149,21 +149,27 @@ public class FileController extends BaseController
 
             Paragraph informationHeader = new Paragraph();
             informationHeader.setFont(fontHeader2);
-            informationHeader.add("  1.Details");
+            informationHeader.add("1.Details");
             informationHeader.setAlignment(Element.ALIGN_LEFT);
 
             Paragraph information = new Paragraph();
-            information.add("Status: Active");
+            information.add("  " + "Status: Active");
             information.add(Chunk.NEWLINE);
-            information.add("Client: ETF");
+            if (project.getClient() != null)
+            {
+                information.add("  " + "Client: " + project.getClient());
+                information.add(Chunk.NEWLINE);
+            }
+            if (project.getVersion() != null)
+            {
+                information.add("  " + "Version: " + project.getVersion());
+                information.add(Chunk.NEWLINE);
+            }
+            information.add("  " + "Created: " + format.format(new Date(project.getCreatedDate().getTime())));
             information.add(Chunk.NEWLINE);
-            information.add("Version: v1");
+            information.add("  " + "Last update:: " + format.format(new Date(project.getUpdated().getTime())));
             information.add(Chunk.NEWLINE);
-            information.add("Created: " + format.format(new Date(project.getCreatedDate().getTime())));
-            information.add(Chunk.NEWLINE);
-            information.add("Last update:: " + format.format(new Date(project.getUpdated().getTime())));
-            information.add(Chunk.NEWLINE);
-            information.add("Completed: 45%");
+            information.add("  " + "Completed: " + taskService.getPercentage(project).getPercentage() + "%");
 
             document.add(paragraph);
             document.add(Chunk.NEWLINE);
@@ -172,13 +178,13 @@ public class FileController extends BaseController
 
             Paragraph descHeader = new Paragraph();
             descHeader.setFont(fontHeader2);
-            descHeader.add("  2.Description");
+            descHeader.add("2.Description");
 
             document.add(Chunk.NEWLINE);
             document.add(descHeader);
 
             Paragraph desc = new Paragraph();
-            desc.add(project.getDescription());
+            desc.add("  " + project.getDescription());
 
             document.add(desc);
 
@@ -187,10 +193,10 @@ public class FileController extends BaseController
             {
                 Paragraph tableHeader = new Paragraph();
                 tableHeader.setFont(fontHeader2);
-                tableHeader.add("  3.Tasks");
+                tableHeader.add("3.Tasks");
                 tableHeader.add(Chunk.NEWLINE);
                 PdfPTable table = new PdfPTable(6);
-                table.setWidthPercentage(100);
+                table.setWidthPercentage(95);
                 PdfPCell c1 = new PdfPCell(new Phrase("Name"));
                 c1.setHorizontalAlignment(Element.ALIGN_CENTER);
                 table.addCell(c1);
@@ -238,7 +244,7 @@ public class FileController extends BaseController
         }
 
         ByteArrayInputStream in = new ByteArrayInputStream(outputStream.toByteArray());
-        response.setHeader("Content-disposition", "attachment; filename=aaa.pdf");
+        response.setHeader("Content-disposition", "attachment; filename=" + project.getName().replace(" ", "_") + ".pdf");
         response.setContentType("application/pdf");
         IOUtils.copy(in, response.getOutputStream());
         in.close();

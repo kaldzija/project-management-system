@@ -51,7 +51,7 @@
                         <div class="col-lg-5">
                             <dl class="dl-horizontal">
                                 <dt>Status:</dt>
-                                <dd ng-show="task.status=='TODO'">{{'LABEL_ACTIVE'|translate}}
+                                <dd ng-show="task.status=='TODO'">{{'LABEL_TODO'|translate}}
                                     <a ng-show="projectOwner.id==currentUser.id||(task.user.id==currentUser.id&&project.status=='ACTIVE')"
                                        ng-click="changeStatus()"><i
                                             class="fa fa-edit"></i></a>

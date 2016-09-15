@@ -12,13 +12,17 @@ import java.util.List;
  */
 public interface IUserDao extends IBaseDao
 {
-    User getRegistredByEmail(String email);
+    User getRegisteredByEmail(String email);
+
+    User getUserByEmail(String email);
 
     User getSocialUser(String socialId, SocialTypeEnum socialType);
 
     List<Contact> getUserContacts(User user);
 
     List<Contact> getApprovedUserContacts(User user);
+
+    Contact getContact(Integer contactId);
 
     List<Notification> getUnreadNotifications(User user);
 

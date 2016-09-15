@@ -27,9 +27,15 @@ public class UserService
     }
 
     @Transactional(readOnly = true)
-    public User getRegistredByEmail(String email)
+    public User getRegisteredByEmail(String email)
     {
-        return userDao.getRegistredByEmail(email);
+        return userDao.getRegisteredByEmail(email);
+    }
+
+    @Transactional(readOnly = true)
+    public User getUserByEmail(String email)
+    {
+        return userDao.getUserByEmail(email);
     }
 
     @Transactional(readOnly = true)
@@ -78,5 +84,11 @@ public class UserService
     public void delete(Object o)
     {
         userDao.delete(o);
+    }
+
+    @Transactional
+    public Contact getContact(Integer contactId)
+    {
+        return userDao.getContact(contactId);
     }
 }

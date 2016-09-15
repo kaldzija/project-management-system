@@ -25,6 +25,11 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             url: "/index",
             templateUrl: "public/views/common/content.html"
         })
+        .state('admin', {
+            abstract: true,
+            url: "/index",
+            templateUrl: "public/views/common/content.html"
+        })
         .state('index.main', {
             url: "/main",
             templateUrl: "public/views/main.html",
@@ -113,6 +118,11 @@ function config($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
             templateUrl: "public/views/users/other_users.html",
             data: {pageTitle: 'Other users'}
         })
+        .state('admin.users', {
+            url: "/admin/users",
+            templateUrl: "public/views/admin/users.html",
+            data: {pageTitle: 'Users'}
+        })
         .state('users.profile', {
             url: "/users/veiw/:userId",
             templateUrl: "public/views/users/user-profile.html",
@@ -164,8 +174,11 @@ angular
               
             if (toState.name != 'login' && $rootScope.currentUser == null) {
                 $location.path('login');
+                // e.preventDefault();
             }
-            if (toState.name == 'login' && $rootScope.currentUser != null)
+            if (toState.name == 'login' && $rootScope.currentUser != null) {
                 $location.path('/index/main');
+                // e.preventDefault();
+            }
         });
     });

@@ -1,6 +1,7 @@
 package com.nwt.controllers;
 
 import com.nwt.dao.model.*;
+import com.nwt.other.ProjectCompletedPercentage;
 import com.nwt.services.CommentService;
 import com.nwt.services.ProjectService;
 import com.nwt.services.TaskService;
@@ -106,39 +107,7 @@ public class ProjectController extends BaseController
     @RequestMapping(method = RequestMethod.GET, value = "/{id}/percentage")
     public ProjectCompletedPercentage getProjectCompletedPercentage(@PathVariable(value = "id") Integer projectId)
     {
-        Integer total;
-        Integer completed = 0;
-
         Project project = projectService.get(projectId);
-        List<Task> tasks = taskService.getProjectTasks(project);
-
-        ProjectCompletedPercentage projectCompletedPercentage = new ProjectCompletedPercentage();
-        total = tasks.size();
-        projectCompletedPercentage.setPercentage(100);
-
-        if (total.equals(0)) return projectCompletedPercentage;
-
-        for (Task task : tasks)
-        {
-            if (task.getStatus().equals(TaskStatusEnum.COMPLETED)) completed++;
-        }
-
-        projectCompletedPercentage.setPercentage(completed * 100 / total);
-        return projectCompletedPercentage;
-    }
-
-    public class ProjectCompletedPercentage
-    {
-        private Integer percentage;
-
-        public Integer getPercentage()
-        {
-            return percentage;
-        }
-
-        public void setPercentage(Integer percentage)
-        {
-            this.percentage = percentage;
-        }
+        return taskService.getPercentage(project);
     }
 }

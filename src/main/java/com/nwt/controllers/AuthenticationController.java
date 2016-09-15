@@ -103,6 +103,12 @@ public class AuthenticationController extends BaseController
         {
             user = createUser(facebookUser.getFirstName() + " " + facebookUser.getLastName(), facebookUser.getGender(), facebookUser.getId(), SocialTypeEnum.FACEBOOK);
         }
+
+        if (user.getState().equals(UserStateEnum.BLOCKED))
+        {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
+
         Token token = AuthUtils.createToken(getRequest().getRemoteHost(), user.getId().toString());
         token.setUser(user);
         updateUserActivity(user);
@@ -139,6 +145,11 @@ public class AuthenticationController extends BaseController
         if (user == null)
         {
             user = createUser(googleUser.getGiven_name() + ' ' + googleUser.getFamily_name(), googleUser.getGender(), googleUser.getSub(), SocialTypeEnum.GOOGLE);
+        }
+
+        if (user.getState().equals(UserStateEnum.BLOCKED))
+        {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
 
         Token token = AuthUtils.createToken(getRequest().getRemoteHost(), user.getId().toString());
@@ -179,6 +190,10 @@ public class AuthenticationController extends BaseController
         {
             user = createUser(linkedInUser.getFirstName() + " " + linkedInUser.getLastName(), null, linkedInUser.getId(), SocialTypeEnum.LINKEDIN);
         }
+        if (user.getState().equals(UserStateEnum.BLOCKED))
+        {
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+        }
         Token token = AuthUtils.createToken(getRequest().getRemoteHost(), user.getId().toString());
         token.setUser(user);
         updateUserActivity(user);
@@ -217,6 +232,11 @@ public class AuthenticationController extends BaseController
             if (user == null)
             {
                 user = createUser(twitterUser.getName(), null, twitterUser.getId(), SocialTypeEnum.TWITTER);
+            }
+
+            if (user.getState().equals(UserStateEnum.BLOCKED))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
             Token token = AuthUtils.createToken(getRequest().getRemoteHost(), user.getId().toString());
@@ -260,7 +280,7 @@ public class AuthenticationController extends BaseController
         String displayName = node.get("displayName").asText();
         String password = node.get("password").asText();
         // TODO: 02.08.2016. Check email exists
-        if (userService.getRegistredByEmail(email) != null) return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+        if (userService.getUserByEmail(email) != null) return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
 
         User user = new User();
         user.setDisplayName(displayName);
@@ -268,7 +288,7 @@ public class AuthenticationController extends BaseController
         user.setEmail(email);
         user.setRegisteredDate(new Timestamp(System.currentTimeMillis()));
         user.setRole(RoleEnum.CLIENT);
-        user.setState(UserStateEnum.CONFIRMATION_REQUIRED);
+        user.setState(UserStateEnum.ACTIVE);
         userService.saveOrUpdate(user);
 
         ConfirmationToken confirmationToken = new ConfirmationToken();
@@ -291,16 +311,17 @@ public class AuthenticationController extends BaseController
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode node = objectMapper.readTree(objectMapper.writeValueAsString(loginData));
         String email = node.get("email").asText();
-        User user = userService.getRegistredByEmail(email);
+        User user = userService.getRegisteredByEmail(email);
         if (user == null || !node.get("password").asText().equals(user.getPasswordHash()))
         {
             return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        if (user.getState().equals(UserStateEnum.AWAITING_VERIFICATION))
+        if (user.getState().equals(UserStateEnum.BLOCKED))
         {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
+
 
         Token token = AuthUtils.createToken(getRequest().getRemoteHost(), user.getId().toString());
         token.setUser(user);

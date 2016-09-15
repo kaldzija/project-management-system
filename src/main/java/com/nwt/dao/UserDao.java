@@ -25,9 +25,15 @@ public class UserDao extends BaseDao<User> implements IUserDao
     }
 
     @Override
-    public User getRegistredByEmail(String email)
+    public User getRegisteredByEmail(String email)
     {
         return (User) getSession().createCriteria(User.class).add(Restrictions.eq("email", email)).add(Restrictions.isNull("socialType")).uniqueResult();
+    }
+
+    @Override
+    public User getUserByEmail(String email)
+    {
+        return (User) getSession().createCriteria(User.class).add(Restrictions.eq("email", email)).uniqueResult();
     }
 
     @Override
@@ -51,6 +57,12 @@ public class UserDao extends BaseDao<User> implements IUserDao
         criteria.add(Restrictions.or(Restrictions.eq("sender", user), Restrictions.eq("receiver", user)));
         criteria.add(Restrictions.eq("approved", true));
         return criteria.list();
+    }
+
+    @Override
+    public Contact getContact(Integer contactId)
+    {
+        return contactId != null ? getSession().get(Contact.class, contactId) : null;
     }
 
     @Override

@@ -10,6 +10,7 @@ public enum UserStateEnum
     ACTIVE,
     AWAITING_VERIFICATION,
     LOCKED,
+    BLOCKED,
     DELETED,
     CONFIRMATION_REQUIRED
 }

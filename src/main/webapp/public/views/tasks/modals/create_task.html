@@ -5,19 +5,41 @@
         <!--<small class="font-bold">{{'MESSAGE_FILL_ALL_FIELDS'|translate}}</small>-->
     </div>
     <div class="modal-body">
-        <form method="get" class="form-horizontal">
+        <form method="get"
+              class="form-horizontal"
+              name="createTaskForm"
+              id="createTaskForm"
+              novalidate>
             <div class="form-group">
                 <label class="col-sm-2 control-label">Name</label>
                 <div class="col-sm-10">
-                    <input type="text" ng-model="task.name" class="form-control">
+                    <input type="text"
+                           ng-model="task.name"
+                           name="name"
+                           required
+                           class="form-control">
+                    <small class="{{createTaskForm.submitted?'text-danger':'text-info'}}"
+                           ng-if="createTaskForm.name.$error.required"
+                           translate="ERROR_REQUIRED"
+                           translate-value-field="{{'LABEL_NAME' | translate}}">
+                    </small>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-sm-2 control-label">Description</label>
                 <div class="col-sm-10">
-                    <textarea class="form-control" ng-model="task.description" style="resize: none;"
+                    <textarea class="form-control"
+                              ng-model="task.description"
+                              name="description"
+                              required
+                              style="resize: none;"
                               rows="10"></textarea>
+                    <small class="{{createTaskForm.submitted?'text-danger':'text-info'}}"
+                           ng-if="createTaskForm.description.$error.required"
+                           translate="ERROR_REQUIRED"
+                           translate-value-field="{{'LABEL_DESCRIPTION' | translate}}">
+                    </small>
                 </div>
             </div>
         </form>

@@ -31,26 +31,50 @@
                            class="btn btn-primary btn-xs">Add new task</a>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <input type="text" class="form-control input-sm m-b-xs" id="filter"
-                           placeholder="Search in table">
+                <div class="table-responsive ibox-content">
+                    <!--<input type="text" class="form-control input-sm m-b-xs" id="filter"-->
+                    <!--placeholder="Search in table">-->
 
-                    <table class="footable table table-stripped" data-page-size="4" data-filter=#filter>
+                    <table st-table="tasksTable" st-safe-src="tasks" class="table table-hover table-striped">
                         <thead>
+                        <tr class="st-sort-header-column">
+                            <th st-sort-default="default" st-sort="name">Name</th>
+                            <th st-sort="created">Created</th>
+                            <th st-sort="updated">Updated</th>
+                            <th st-sort="user.displayName">User</th>
+                            <th st-sort="status">Status</th>
+                        </tr>
                         <tr>
-                            <th>Name</th>
-                            <th>User</th>
-                            <th>Created</th>
-                            <th>Updated</th>
-                            <th>Status</th>
+                            <th colspan="3">
+                                <input type="text" st-search="name" placeholder="{{'LABEL_NAME'|translate}}"
+                                       class="input-sm form-control">
+                            </th>
+
+                            <th>
+                                <input type="text" st-search="user.displayName" placeholder="{{'LABEL_USER'|translate}}"
+                                       class="input-sm form-control">
+                            </th>
+
+                            <th colspan="2">
+                                <select name="status"
+                                        class="form-control input-sm"
+                                        style="font-weight: normal;"
+                                        st-search="status">
+                                    <option value="">{{'ALL' | translate}}</option>
+                                    <option ng-repeat="row in tasks | unique:'status'"
+                                            value="{{row.status}}">
+                                        {{row.status|translate}}
+                                    </option>
+                                </select>
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="task in tasks" foo-repeat-done>
+                        <tr ng-repeat="task in tasksTable track by task.id" foo-repeat-done>
                             <td>{{task.name}}</td>
-                            <td>{{task.user.displayName}}</td>
                             <td>{{task.created | date:"dd.MM.yyyy HH:mm"}}</td>
                             <td>{{task.updated | date:"dd.MM.yyyy HH:mm"}}</td>
+                            <td>{{task.user.displayName}}</td>
                             <td ng-if="task.status=='TODO'">
                                 To Do
                             </td>
@@ -71,9 +95,14 @@
                         </tr>
                         </tbody>
                         <tfoot>
+                        <tr ng-if="tasksTable.length == 0">
+                            <td colspan="6" class="text-center no-data">
+                                <div>{{'NO_DATA' | translate}}</div>
+                            </td>
+                        </tr>
                         <tr>
-                            <td colspan="6">
-                                <ul class="pagination pull-right"></ul>
+                            <td colspan="6" class="text-center">
+                                <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="4"></div>
                             </td>
                         </tr>
                         </tfoot>

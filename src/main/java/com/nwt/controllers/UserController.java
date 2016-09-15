@@ -27,12 +27,20 @@ public class UserController extends BaseController
         return getUserService().getUser(userId);
     }
 
-    @ResponseBody
     @RequestMapping(method = RequestMethod.POST)
-    public User saveOrUpdate(@RequestBody User user)
+    public ResponseEntity saveOrUpdate(@RequestBody User user)
     {
+        User oldUser = null;
+        if (user.getEmail() != null && !user.getEmail().equals(""))
+            oldUser = getUserService().getUserByEmail(user.getEmail());
+
+        if (oldUser != null && !oldUser.getId().equals(user.getId()))
+            return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+        if (user.getSocialType() == null && (user.getEmail() == null || user.getEmail().equals("")))
+            return new ResponseEntity(HttpStatus.FORBIDDEN);
+
         getUserService().saveOrUpdate(user);
-        return user;
+        return new ResponseEntity(user, HttpStatus.OK);
     }
 
     @ResponseBody
@@ -72,7 +80,6 @@ public class UserController extends BaseController
     public FakeObject handleContact(@RequestBody Object o, @PathVariable(value = "notificationId") Integer notificationId, @RequestParam(required = true, value = "accept") String accept)
     {
         Notification notification = getUserService().getNotification(notificationId);
-        notification.setRead(true);
         getUserService().saveOrUpdate(notification);
         if (accept.equals("true"))
         {
@@ -80,9 +87,18 @@ public class UserController extends BaseController
             contact.setApproved(true);
             getUserService().saveOrUpdate(contact);
         }
+        getUserService().delete(notification);
         FakeObject fakeObject = new FakeObject();
         fakeObject.setResult(getUserService().getUnreadNotifications(getCurrentUser()));
         return fakeObject;
+    }
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.DELETE, value = "/contacts")
+    public ResponseEntity removeContact(@RequestParam(required = true, value = "contactId") Integer contactId)
+    {
+        getUserService().delete(getUserService().getContact(contactId));
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @ResponseBody
@@ -141,7 +157,7 @@ public class UserController extends BaseController
         //Potntial and real
         List<SimpleUser> simpleUsers = new ArrayList<>();
         List<ProjectMember> projectMembers = projectService.getProjectMembers(projectId);
-        List<User> users = getUsersFromContact(getUserService().getUserContacts(getCurrentUser()), getCurrentUser());
+        List<User> users = getUsersFromContact(getUserService().getApprovedUserContacts(getCurrentUser()), getCurrentUser());
         for (User user : users)
         {
             if (user.getId().equals(getCurrentUserId())) continue;
@@ -182,7 +198,11 @@ public class UserController extends BaseController
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    ;
+    @RequestMapping(method = RequestMethod.GET, value = "/admin/users")
+    public List<User> getAllUsers()
+    {
+        return getUserService().getAll();
+    }
 
     private List<User> getUsersFromContact(List<Contact> contacts, User user)
     {

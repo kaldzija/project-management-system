@@ -81,6 +81,10 @@ angular.module('inspinia')
         this.resolveContact = function (notificationId, accept) {
             return $resource(getApiUrl('/users/contacts/' + notificationId + "?accept=" + accept))
         }
+
+        this.adminUsers = function () {
+            return $resource(getApiUrl('/users/admin/users'))
+        }
     }])
     .service("taskService", ['$resource', function ($resource) {
         this.getTask = function () {

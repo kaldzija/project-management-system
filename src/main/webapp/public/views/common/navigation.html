@@ -7,7 +7,7 @@
                     <a href="" style="background: transparent;" ui-sref="users.profile({userId:currentUser.id})">
                         <img ui-sref="users.profile({userId:currentUser.id})"
                              alt="image" class="img-circle"
-                             src="api/image/user/{{currentUser.id}}"/>
+                             src="api/image/user/{{currentUser.id}}?fakeParame={{fakeParam}}'"/>
                     </a>
                     <a class="dropdown-toggle" dropdown-toggle href>
                             <span class="clear">
@@ -19,7 +19,7 @@
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
                         <li><a href="" ui-sref="users.edit">{{'EDIT_USER_PROFILE'|translate}}</a></li>
                         <li class="divider"></li>
-                        <li><a href="">Logout</a></li>
+                        <li><a href="">{{'LOGOUT'|translate}}</a></li>
                     </ul>
                 </div>
                 <div class="logo-element">
@@ -35,7 +35,8 @@
             <!--<a ui-sref="index.minor"><i class="fa fa-desktop"></i> <span class="nav-label">Minor page</span></a>-->
             <!--</li>-->
             <li ui-sref-active="active">
-                <a ui-sref="index.projects"><i class="fa fa-cubes"></i> <span class="nav-label">Projects</span></a>
+                <a ui-sref="index.projects"><i class="fa fa-cubes"></i> <span
+                        class="nav-label">{{'PROJECTS'|translate}}</span></a>
             </li>
 
             <li ng-class="{active: $state.includes('users')}">
@@ -45,6 +46,11 @@
                     <li ui-sref-active="active"><a ui-sref="users.other-users">{{'LABEL_FIND_NEW_CONTACTS' +
                         ''|translate}}</a></li>
                 </ul>
+            </li>
+
+            <li ui-sref-active="active" ng-show="currentUser.role=='ADMINISTRATOR'">
+                <a ui-sref="admin.users"><i class="fa fa-user"></i> <span
+                        class="nav-label">{{'LABEL_USERS'|translate}}</span></a>
             </li>
         </ul>
 

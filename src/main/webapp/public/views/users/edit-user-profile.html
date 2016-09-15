@@ -22,11 +22,24 @@
                     <h5>{{'USER_DATA'|translate}}</h5>
                 </div>
                 <div class="ibox-content">
-                    <form method="get" class="form-horizontal">
+                    <form method="get"
+                          novalidate
+                          name="editProfileForm"
+                          id="editProfileForm"
+                          class="form-horizontal">
                         <div class="form-group">
                             <label class="col-sm-2 control-label">{{'LABEL_NAME'|translate}}</label>
                             <div class="col-sm-10">
-                                <input ng-model="user.displayName" type="text" class="form-control">
+                                <input ng-model="user.displayName"
+                                       type="text"
+                                       required
+                                       name="displayName"
+                                       class="form-control">
+                                <small class="{{editProfileForm.submitted?'text-danger':'text-info'}}"
+                                       ng-if="editProfileForm.displayName.$error.required"
+                                       translate="ERROR_REQUIRED"
+                                       translate-value-field="{{'LABEL_NAME' | translate}}">
+                                </small>
                             </div>
                         </div>
 
@@ -48,7 +61,20 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">{{'EMAIL'|translate}}</label>
                             <div class="col-sm-10">
-                                <input ng-model="user.email" type="text" class="form-control">
+                                <input ng-model="user.email"
+                                       type="text"
+                                       name="email"
+                                       ng-pattern="/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/"
+                                       class="form-control">
+                                <small class="{{editProfileForm.submitted?'text-danger':'text-info'}}"
+                                       ng-if="editProfileForm.email.$error.pattern && editProfileForm.submitted"
+                                       translate="ERROR_WRONG_FORMAT"
+                                       translate-value-field="{{'EMAIL' | translate}}">
+                                </small>
+                                <small class="text-danger"
+                                       ng-if="emailError&&!user.email">
+                                    {{emailErrorMessage}}
+                                </small>
                             </div>
                         </div>
 

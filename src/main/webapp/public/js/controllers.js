@@ -8,11 +8,16 @@
  */
 function MainCtrl($scope, $rootScope, $auth, $location, $state, $stateParams) {
     $rootScope.currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    $scope.fakeParam = new Date();
 
+    $scope.$on('refreshPhoto', function (event, args) {
+        $scope.fakeParam = new Date();
+    });
+    
     $scope.logout = function () {
         localStorage.removeItem("currentUser");
         $rootScope.isAuthorized = false;
-        $rootScope.constructor = null;
+        $rootScope.currentUser = null;
         $auth.logout();
         // $location.path('/login');
         $state.go('login');
@@ -53,7 +58,7 @@ function RegisterController($scope, $auth, $translate, toastr, $state) {
     }
 }
 
-function AuthenticationController($scope, $auth, $rootScope, $location, $state) {
+function AuthenticationController($scope, $auth, $rootScope, $location, $state, $translate, toastr) {
     $scope.loginData = {
         email: null,
         password: null
@@ -65,24 +70,39 @@ function AuthenticationController($scope, $auth, $rootScope, $location, $state) 
             localStorage.setItem("currentUser", JSON.stringify($rootScope.currentUser));
             $rootScope.isAuthorized = true;
             $state.go('index.projects');
+        }, function (error) {
+            if (error.status == 403) {
+                $translate('MESSAGE_BLOCKED').then(function (value) {
+                    toastr.error(value);
+                });
+            }
         });
     };
 
     $scope.login = function () {
-        $auth.login($scope.loginData)
-            .then(function (response) {
-                $rootScope.currentUser = response.data.user;
-                localStorage.setItem("currentUser", JSON.stringify($rootScope.currentUser));
-                $rootScope.isAuthorized = true;
-                // $location.path('/index/main');
-                $state.go('index.projects');
-            })
-            .catch(function (error) {
-                if (error.status == 406)
-                    return;
-                else if (error.status == 403)
-                    return;
-            });
+        $scope.loginForm.notExist = false;
+        if ($scope.loginForm.$valid) {
+            $auth.login($scope.loginData)
+                .then(function (response) {
+                    $rootScope.currentUser = response.data.user;
+                    localStorage.setItem("currentUser", JSON.stringify($rootScope.currentUser));
+                    $rootScope.isAuthorized = true;
+                    // $location.path('/index/main');
+                    $state.go('index.projects');
+                })
+                .catch(function (error) {
+                    if (error.status == 406) {
+                        $scope.loginForm.notExist = true;
+                        return;
+                    }
+                    else if (error.status == 403)
+                        $translate('MESSAGE_BLOCKED').then(function (value) {
+                            toastr.error(value);
+                        });
+                });
+        } else {
+            $scope.loginForm.submitted = true;
+        }
     };
 }
 
@@ -93,11 +113,21 @@ function TranslateController($translate, $scope) {
 }
 
 function ProjectController($scope, $modal, projectService) {
+    $scope.itemsByPage = 6;
+
+    $scope.isSelected = function (id1, id2) {
+        return id1 == id2;
+    };
+    
     $scope.loadProjects = function () {
         projectService.getProjects().query().$promise.then(function (result) {
             $scope.projects = result;
             if ($scope.projects.length != null) {
                 $scope.projects.forEach(function (entry) {
+                    if (entry.status == 'ACTIVE')
+                        entry.fakeStatus = '_ACTIVE';
+                    else
+                        entry.fakeStatus = 'INACTIVE';
                     projectService.getProjectPercentage().get({id: entry.id}).$promise.then(function (result) {
                         entry.percentage = result.percentage;
                     });
@@ -124,7 +154,8 @@ function ProjectController($scope, $modal, projectService) {
         $modal.open(modalInstance).result.then(function (result) {
 
         }, function (result) {
-            $scope.projects = projectService.getProjects().query();
+            if (result == 'save')
+                $scope.loadProjects();
         });
     };
 
@@ -134,7 +165,7 @@ function ProjectController($scope, $modal, projectService) {
     }
 }
 
-function ModalCreateProjectController($scope, $modalInstance, projectService) {
+function ModalCreateProjectController($scope, $modalInstance, projectService, $translate, toastr) {
     $scope.project = {
         name: null,
         description: null,
@@ -148,15 +179,22 @@ function ModalCreateProjectController($scope, $modalInstance, projectService) {
         // $modalInstance.close(); 
 
         //This call second function on callback with value 'save' as resul parameter
-        projectService.createProject().save($scope.project,
-            function (resp, headers) {
-                //success callback
-                $modalInstance.dismiss('save');
-            },
-            function (error, status) {
-                // error callback
-                $modalInstance.dismiss('save');
-            });
+        if ($scope.createProjectForm.$valid) {
+            projectService.createProject().save($scope.project,
+                function (resp, headers) {
+                    //success callback
+                    $modalInstance.dismiss('save');
+                    $translate('MESSAGE_DATA_CREATED').then(function (value) {
+                        toastr.success(value);
+                    });
+                },
+                function (error, status) {
+                    // error callback
+                    // $modalInstance.dismiss('save');
+                });
+        } else {
+            $scope.createProjectForm.submitted = true;
+        }
 
     };
 
@@ -226,7 +264,6 @@ function ProjectDetailsController($scope, $stateParams, projectService, $modal) 
         var editProjectModal = {
             templateUrl: 'public/views/projects/modals/project_status.html',
             controller: ModalEditProjectController,
-            size: 'sm',
             resolve: {
                 project: function () {
                     return $scope.project;
@@ -245,25 +282,33 @@ function ProjectDetailsController($scope, $stateParams, projectService, $modal) 
     }
 }
 
-function ModalEditProjectController($scope, $modalInstance, projectService, project) {
+function ModalEditProjectController($scope, $modalInstance, projectService, project, $translate, toastr) {
     $scope.project = jQuery.extend(true, {}, project);
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
 
     $scope.update = function () {
-        projectService.editProject().save($scope.project,
-            function (resp, headers) {
-                //success callback
-                $modalInstance.dismiss('save');
-            },
-            function (error, status) {
-                // error callback
-            });
+        $scope.editProjectForm.submitted = true;
+        if ($scope.editProjectForm.$valid) {
+            projectService.editProject().save($scope.project,
+                function (resp, headers) {
+                    //success callback
+                    $modalInstance.dismiss('save');
+                    $translate('MESSAGE_DATA_UPDATED').then(function (value) {
+                        toastr.success(value);
+                    });
+                },
+                function (error, status) {
+                    // error callback
+                });
+        } else {
+            $scope.editProjectForm.submitted = true;
+        }
     };
 }
 
-function ModalCreateTaskController($scope, $modalInstance, taskService, project) {
+function ModalCreateTaskController($scope, $modalInstance, taskService, project, $translate, toastr) {
     $scope.project = project;
     $scope.task = {
         name: null,
@@ -274,22 +319,33 @@ function ModalCreateTaskController($scope, $modalInstance, taskService, project)
     };
 
     $scope.save = function () {
-        $scope.task.project = $scope.project;
-        taskService.saveOrUpdate().save($scope.task,
-            function (resp, headers) {
-                //success callback
-                $modalInstance.dismiss('save');
-            },
-            function (error, status) {
-                // error callback
-                $modalInstance.dismiss('save');
-            });
+
+        $scope.createTaskForm.submitted = true;
+        if ($scope.createTaskForm.$valid) {
+            $scope.task.project = $scope.project;
+            taskService.saveOrUpdate().save($scope.task,
+                function (resp, headers) {
+                    //success callback
+                    $modalInstance.dismiss('save');
+                    $translate('MESSAGE_DATA_CREATED').then(function (value) {
+                        toastr.success(value);
+                    });
+                },
+                function (error, status) {
+                    // error callback
+                    // $modalInstance.dismiss('save');
+                });
+        } else {
+            $scope.createTaskForm.submitted = true;
+        }
+        
 
     };
 };
 
 function TasksController($scope, $modal, $stateParams, projectService, taskService) {
     $scope.project = projectService.getProject().get({id: $stateParams.projectId});
+    $scope.itemsByPage = 10;
     $scope.projectOwner = projectService.getProjectOwner().get({projectId: $stateParams.projectId});
     $scope.tasks = taskService.getProjectTasks().query({projectId: $stateParams.projectId});
     var createTaskModal = {
@@ -438,7 +494,7 @@ function TaskDetailController($scope, $modal, $stateParams, projectService, task
     }
 };
 
-function ModalEditTaskController($scope, $modalInstance, userService, $stateParams, taskService, task) {
+function ModalEditTaskController($scope, $modalInstance, userService, $stateParams, taskService, task, $translate, toastr) {
     $scope.task = jQuery.extend(true, {}, task);
     $scope.isSelected = function (id1, id2) {
         return id1 == id2;
@@ -449,14 +505,21 @@ function ModalEditTaskController($scope, $modalInstance, userService, $statePara
     };
 
     $scope.update = function () {
-        taskService.saveOrUpdate().save($scope.task,
-            function (resp, headers) {
-                //success callback
-                $modalInstance.dismiss('save');
-            },
-            function (error, status) {
-                // error callback
-            });
+        if ($scope.editTaskForm.$valid) {
+            taskService.saveOrUpdate().save($scope.task,
+                function (resp, headers) {
+                    //success callback
+                    $modalInstance.dismiss('save');
+                    $translate('MESSAGE_DATA_UPDATED').then(function (value) {
+                        toastr.success(value);
+                    });
+                },
+                function (error, status) {
+                    // error callback
+                });
+        } else {
+            $scope.editTaskForm.submitted = true;
+        }
     };
 }
 function TaskCommentsController($scope, $stateParams, taskService) {
@@ -498,17 +561,37 @@ function UsersDetailsController($scope, $stateParams, userService) {
     $scope.user = userService.getUser().get({userId: $stateParams.userId});
 }
 
-function EditUserDataController($scope, $rootScope, $stateParams, userService, $http) {
+function EditUserDataController($scope, $rootScope, $stateParams, userService, $http, $translate, toastr) {
     $scope.user = userService.getUser().get({userId: $rootScope.currentUser.id});
 
     $scope.update = function () {
-        userService.saveOrUpdate().save($scope.user,
-            function (resp, headers) {
-                $scope.user = resp;
-            },
-            function (error, status) {
+        if ($scope.editProfileForm.$valid) {
+            $scope.editProfileForm.submitted = false;
+            userService.saveOrUpdate().save($scope.user,
+                function (resp, headers) {
+                    $scope.user = resp;
+                    $translate('MESSAGE_DATA_UPDATED').then(function (value) {
+                        toastr.success(value);
+                    });
+                },
+                function (error, status) {
+                    if (error.status == 403) {
+                        $scope.emailError = true;
+                        $translate('MESSAGE_EMAIL_REQUIRED').then(function (value) {
+                            $scope.emailErrorMessage = value;
+                        });
+                        // $scope.editProfileForm.submitted=true;
+                    } else if (error.status == 406) {
+                        $translate('ERROR_MESSAGE_USER_EXIST').then(function (value) {
+                            toastr.error(value);
+                        });
+                    }
 
-            });
+                });
+        } else {
+            $scope.editProfileForm.submitted = true;
+        }
+        
     };
 
     $scope.cancel = function () {
@@ -533,6 +616,7 @@ function EditUserDataController($scope, $rootScope, $stateParams, userService, $
             }).success(function (d) {
             angular.element("input[type='file']").val(null);
             $scope.showLoading = false;
+            $scope.$emit("refreshPhoto", d);
         })
 
 
@@ -617,9 +701,33 @@ function ProjectUsersController($scope, $stateParams, userService, $translate, t
     }
 }
 
-function ContactsController($scope, userService, $translate, toastr) {
+function ContactsController($scope, userService, $translate, toastr, sweetAlert) {
 
     $scope.contacts = userService.getContacts().query();
+
+    $scope.removeContact = function (user, contact) {
+        sweetAlert.swal({
+                title: $translate.instant('ARE_YOU_SURE'),
+                text: user.displayName + $translate.instant('TEMPLATE_MESSAGE_1'),
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: $translate.instant('CONFIRMATION_REMOVE'),
+                closeOnConfirm: false
+            },
+            function () {
+
+                userService.createContact().remove({contactId: contact.id},
+                    function (resp, headers) {
+                        var index = $scope.contacts.indexOf(contact);
+                        $scope.contacts.splice(index, 1);
+                        swal($translate.instant('REMOVED'), user.displayName + $translate.instant('TEMPLATE_MESSAGE_2'), "success");
+                    },
+                    function (error, status) {
+
+                    });
+            });
+    }
 }
 
 function TaskFileUploadControllerTest($scope, userService, $translate, toastr, FileUploader, $auth, task, $http) {
@@ -810,20 +918,95 @@ function MessagesCountController($scope, $timeout, messageService) {
     (function refresh() {
         messageService.getUnread().get().$promise.then(function (result) {
             $scope.unread = result;
+            if ($scope.currentUser == null)
+                return;
             $timeout(refresh, 5000);
         })
     })();
 
 }
+
+function AdminUsersController($scope, userService, $modal) {
+    $scope.users = userService.adminUsers().query();
+    $scope.itemsByPage = 10;
+
+    $scope.changeRole = function (user) {
+        var changeRoleModal = {
+            templateUrl: 'public/views/admin/modals/user_role.html',
+            controller: ModalUserUpdate,
+            resolve: {
+                user: function () {
+                    return user;
+                }
+            }
+        };
+
+        $modal.open(changeRoleModal).result.then(function (result) {
+            //Fake parameter
+        }, function (result) {
+            //Fake parameter
+            if (result == 'save') {
+                // $scope.project = projectService.getProject().get({id: $stateParams.projectId});
+            }
+        });
+    };
+
+    $scope.changeStatus = function (user) {
+        var changeRoleModal = {
+            templateUrl: 'public/views/admin/modals/user_status.html',
+            controller: ModalUserUpdate,
+            resolve: {
+                user: function () {
+                    return user;
+                }
+            }
+        };
+
+        $modal.open(changeRoleModal).result.then(function (result) {
+            //Fake parameter
+        }, function (result) {
+            //Fake parameter
+            if (result == 'save') {
+                // $scope.project = projectService.getProject().get({id: $stateParams.projectId});
+            }
+        });
+    }
+
+}
+
+function ModalUserUpdate($scope, $modalInstance, userService, user, $translate, toastr) {
+    $scope.role = user.role;
+    $scope.state = user.state;
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.update = function () {
+        user.role = $scope.role;
+        user.state = $scope.state;
+        userService.saveOrUpdate().save(user,
+            function (resp, headers) {
+                user = resp;
+                $translate('MESSAGE_DATA_UPDATED').then(function (value) {
+                    toastr.success(value);
+                });
+                $modalInstance.dismiss('save');
+            },
+            function (error, status) {
+
+            });
+    };
+}
 angular
     .module('inspinia')
     .controller('RegisterController', ['$scope', '$auth', '$translate', 'toastr', '$state', RegisterController])
-    .controller('AuthenticationController', ['$scope', '$auth', '$rootScope', '$location', '$state', AuthenticationController])
+    .controller('AuthenticationController', ['$scope', '$auth', '$rootScope', '$location', '$state', '$translate', 'toastr', AuthenticationController])
     .controller('TranslateController', ['$translate', '$scope', TranslateController])
     .controller('ProjectController', ProjectController)
     .controller('ProjectDetailsController', ProjectDetailsController)
     .controller('NavigationHelpController', NavigationHelpController)
     .controller('TasksController', TasksController)
+    .controller('AdminUsersController', AdminUsersController)
     .controller('TaskDetailController', TaskDetailController)
     .controller('ProjectCommentsController', ProjectCommentsController)
     .controller('TaskCommentsController', TaskCommentsController)

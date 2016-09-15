@@ -19,10 +19,16 @@
             </div>
             <div class="form-group">
                 <input type="email" class="form-control" placeholder="{{'EMAIL'|translate}}" name="email" required
+                       ng-pattern="/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/"
                        ng-model="user.email">
                 <small class="text-danger"
                        ng-if="registrationForm.email.$error.required && registrationForm.submitted"
                        translate="ERROR_REQUIRED"
+                       translate-value-field="{{'EMAIL' | translate}}">
+                </small>
+                <small class="text-danger"
+                       ng-if="!registrationForm.email.$error.required && registrationForm.email.$error.pattern && registrationForm.submitted"
+                       translate="ERROR_WRONG_FORMAT"
                        translate-value-field="{{'EMAIL' | translate}}">
                 </small>
                 <small class="text-danger"

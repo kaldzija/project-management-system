@@ -39,7 +39,9 @@
                         ng-model="todoList">
                         <li class="success-element" ng-repeat="task in todoList">
                             <a href="" class="text-navy"
-                               ui-sref="index.task-details({projectId:projectId,taskId:task.id})"> {{task.name}}</a>
+                               ui-sref="index.task-details({projectId:projectId,taskId:task.id})">
+                                {{task.name|limitTo:20}}{{task.name.length>20?'...':''}}</a>
+                            </a>
                             <div class="agile-detail">
                                 <a href="" ui-sref="users.profile({userId:task.createdBy.id})"
                                    class=" pull-right btn btn-xs btn-white">{{task.createdBy.displayName}}</a>
@@ -59,7 +61,9 @@
                         ng-model="inProgressList">
                         <li class="success-element" ng-repeat="task in inProgressList">
                             <a href="" class="text-navy"
-                               ui-sref="index.task-details({projectId:projectId,taskId:task.id})"> {{task.name}}</a>
+                               ui-sref="index.task-details({projectId:projectId,taskId:task.id})">
+                                {{task.name|limitTo:20}}{{task.name.length>20?'...':''}}</a>
+                            </a>
                             <div class="agile-detail">
                                 <a href="" ui-sref="users.profile({userId:task.createdBy.id})"
                                    class=" pull-right btn btn-xs btn-white">{{task.createdBy.displayName}}</a>

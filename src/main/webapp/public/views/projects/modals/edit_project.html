@@ -5,19 +5,38 @@
         <!--<small class="font-bold">{{'MESSAGE_FILL_ALL_FIELDS'|translate}}</small>-->
     </div>
     <div class="modal-body">
-        <form method="get" class="form-horizontal">
+        <form name="editProjectForm" id="editProjectForm" method="get" class="form-horizontal">
             <div class="form-group">
                 <label class="col-sm-2 control-label">Name</label>
                 <div class="col-sm-10">
-                    <input type="text" ng-model="project.name" class="form-control">
+                    <input type="text"
+                           ng-model="project.name"
+                           name="name"
+                           required
+                           class="form-control">
+
+                    <small class="{{editProjectForm.submitted?'text-danger':'text-info'}}"
+                           ng-if="editProjectForm.name.$error.required"
+                           translate="ERROR_REQUIRED"
+                           translate-value-field="{{'LABEL_NAME' | translate}}">
+                    </small>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-sm-2 control-label">Description</label>
                 <div class="col-sm-10">
-                    <textarea class="form-control" ng-model="project.description" style="resize: none;"
-                              rows="5"></textarea>
+                    <textarea class="form-control"
+                              ng-model="project.description" style="resize: none;"
+                              required
+                              name="description"
+                              rows="5">
+                    </textarea>
+                    <small class="{{editProjectForm.submitted?'text-danger':'text-info'}}"
+                           ng-if="editProjectForm.description.$error.required"
+                           translate="ERROR_REQUIRED"
+                           translate-value-field="{{'LABEL_DESCRIPTION' | translate}}">
+                    </small>
                 </div>
             </div>
 

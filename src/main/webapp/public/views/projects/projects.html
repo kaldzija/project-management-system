@@ -1,12 +1,12 @@
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-sm-4">
-        <h2>Project list</h2>
+        <h2>{{'PROJECT_LIST'|translate}}</h2>
         <ol class="breadcrumb">
             <li>
                 <a ui-sref="index.main" href="">Home</a>
             </li>
             <li class="active">
-                <strong>Project list</strong>
+                <strong>{{'PROJECT_LIST'|translate}}</strong>
             </li>
         </ol>
     </div>
@@ -18,36 +18,79 @@
 
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5>All projects assigned to this account</h5>
+                    <h5>{{'ALL_ASIGNED_PROJECTS'|translate}}</h5>
 
                     <div class="ibox-tools">
-                        <a href="" ng-click="open()" class="btn btn-primary btn-xs">Create new project</a>
+                        <a href="" ng-click="open()"
+                           class="btn btn-primary btn-xs">{{'CREATE_NEW_PROJECT'|translate}}</a>
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <div class="row m-b-sm m-t-sm">
-                        <div class="col-md-1">
-                            <button ng-click="refresh()" type="button" id="loading-example-btn"
-                                    class="btn btn-white btn-sm"><i class="fa fa-refresh"></i> Refresh
-                            </button>
-                        </div>
-                        <div class="col-md-11">
-                            <div class="input-group" style="width: 100%;"><input type="text" ng-model="searchBox"
-                                                                                 placeholder="Search"
-                                                                                 class="input-sm form-control"></div>
-                            <!--<div class="input-group"><input type="text" ng-model="searchBox" placeholder="Search" class="input-sm form-control"> <span class="input-group-btn">-->
-                            <!--<button type="button" class="btn btn-sm btn-primary"> Go!</button> </span></div>-->
-                        </div>
-                    </div>
+                    <!--<div class="row m-b-sm m-t-sm">-->
+                    <!--<div class="col-md-1">-->
+                    <!--<button ng-click="refresh()" type="button" id="loading-example-btn"-->
+                    <!--class="btn btn-white btn-sm"><i class="fa fa-refresh"></i> Refresh-->
+                    <!--</button>-->
+                    <!--</div>-->
+                    <!--<div class="col-md-11">-->
+                    <!--<div class="input-group" style="width: 100%;"><input type="text" ng-model="searchBox"-->
+                    <!--placeholder="Search"-->
+                    <!--class="input-sm form-control"></div>-->
+                    <!--&lt;!&ndash;<div class="input-group"><input type="text" ng-model="searchBox" placeholder="Search" class="input-sm form-control"> <span class="input-group-btn">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<button type="button" class="btn btn-sm btn-primary"> Go!</button> </span></div>&ndash;&gt;-->
+                    <!--</div>-->
+                    <!--</div>-->
 
-                    <div class="project-list">
+                    <div class="table-responsive project-list">
 
-                        <table class="table table-hover">
+                        <table st-table="projectsTable" st-safe-src="projects" class="table table-hover table-striped">
+                            <thead>
+                            <tr class="st-sort-header-column">
+                                <th st-sort-default="default" st-sort="fakeStatus">{{'LABEL_STATUS' | translate}}</th>
+                                <th st-sort="name">{{'LABEL_NAME' | translate}}</th>
+                                <th st-sort="percentage">{{'LABEL_COMPLETED_TRANSLATED' | translate}}</th>
+                                <th class="text-right column-tools"></th>
+                            </tr>
+
+                            <tr>
+                                <th>
+                                    <select name="fakeStatus"
+                                            class="form-control input-sm"
+                                            style="font-weight: normal;"
+                                            st-search="fakeStatus">
+                                        <option value="">{{'ALL' | translate}}</option>
+                                        <option ng-repeat="row in projects | unique:'fakeStatus'"
+                                                value="{{row.fakeStatus}}">
+                                            {{row.status|translate}}
+                                        </option>
+                                    </select>
+                                </th>
+                                <th>
+                                    <input type="text" st-search="name" placeholder="{{'LABEL_NAME'|translate}}"
+                                           class="input-sm form-control">
+                                </th>
+                                <!--<th colspan="2">-->
+                                <!--<input type="text" st-search="percentage" placeholder="{{'PERCENTAGE'|translate}}" class="input-sm form-control">-->
+                                <!--</th>-->
+                                <th colspan="2">
+                                    <select name="percentage"
+                                            class="form-control input-sm"
+                                            style="font-weight: normal;"
+                                            st-search="percentage">
+                                        <option value="">{{'ALL' | translate}}</option>
+                                        <option ng-repeat="row in projects | unique:'percentage'|orderBy:'-percentage'"
+                                                value="{{row.percentage}}">
+                                            {{row.percentage}}
+                                        </option>
+                                    </select>
+                                </th>
+                            </tr>
+                            </thead>
                             <tbody>
-                            <tr ng-repeat="project in projects|filter:filterProjects">
+                            <tr ng-repeat="project in projectsTable track by project.id">
                                 <td class="project-status">
-                                    <span ng-if="project.status=='ACTIVE'" class="label label-primary">{{'LABEL_ACTIVE'|translate}}</span>
-                                    <span ng-if="project.status=='INACTIVE'" class="label label-default">{{'LABEL_INACTIVE'|translate}}</span>
+                                    <span class="label {{project.status=='ACTIVE'?'label-primary':'label-disabled'}}">{{project.status|translate}}</span>
+
                                 </td>
                                 <td class="project-title">
                                     <a ui-sref="project_detail">{{project.name}}</a>
@@ -57,7 +100,7 @@
                                     </small>
                                 </td>
                                 <td class="project-completion">
-                                    <small>Completion with: {{project.percentage}}%</small>
+                                    <small>{{'COMPLETION_WITH'|translate}}: {{project.percentage}}%</small>
                                     <div class="progress progress-mini">
                                         <div style="width: {{project.percentage}}%;" class="progress-bar"></div>
                                     </div>
@@ -66,13 +109,25 @@
                                 <!--<a href=""><img alt="image" ng-repeat="member in project.members" class="img-circle"-->
                                 <!--src="api/image/user/{{member.user.id}}"></a>-->
                                 <!--</td>-->
-                                <td class="project-actions">
+                                <td class="text-right">
                                     <a href="" ui-sref="index.project-details({projectId:project.id})"
-                                       class="btn btn-white btn-sm"><i class="fa fa-folder"></i> View </a>
+                                       class="btn btn-white btn-sm"><i class="fa fa-folder"></i>{{'LABEL_VIEW'|translate}}</a>
                                     <!--<a class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Edit </a>-->
                                 </td>
                             </tr>
                             </tbody>
+                            <tfoot>
+                            <tr ng-if="projectsTable.length == 0">
+                                <td colspan="4" class="text-center no-data">
+                                    <div>{{'NO_DATA' | translate}}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-center">
+                                    <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="4"></div>
+                                </td>
+                            </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

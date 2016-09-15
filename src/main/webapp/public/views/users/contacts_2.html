@@ -33,7 +33,7 @@
                 <div class="contact-box-footer">
                     <div class="m-t-xs btn-group">
                         <a href="" ui-sref="users.profile({userId:contact.sender.id})" class="btn btn-xs btn-white">{{'LABEL_VIEW'|translate}} </a>
-                        <a class="btn btn-xs btn-white">{{'LABEL_REMOVE'|translate}} </a>
+                        <a class="btn btn-xs btn-white" ng-click="removeContact(contact.sender,contact)">{{'LABEL_REMOVE'|translate}} </a>
                     </div>
                 </div>
 
@@ -58,7 +58,7 @@
                 <div class="contact-box-footer">
                     <div class="m-t-xs btn-group">
                         <a href="" ui-sref="users.profile({userId:contact.receiver.id})" class="btn btn-xs btn-white">{{'LABEL_VIEW'|translate}} </a>
-                        <a class="btn btn-xs btn-white">{{'LABEL_REMOVE'|translate}} </a>
+                        <a class="btn btn-xs btn-white" ng-click="removeContact(contact.receiver,contact)">{{'LABEL_REMOVE'|translate}} </a>
                     </div>
                 </div>
 
