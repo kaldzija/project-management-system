@@ -3,7 +3,7 @@
         <h2>{{'USERS'|translate}}</h2>
         <ol class="breadcrumb">
             <li>
-                <a ui-sref="index.main">Home</a>
+                <a ui-sref="index.main">{{'HOME'|translate}}</a>
             </li>
             <li class="active">
                 <strong>{{'USERS'|translate}}</strong>
@@ -91,7 +91,8 @@
                                     {{user.state|translate}}
                                 </span>
                             </td>
-                            <td>{{user.displayName}}</td>
+                            <td><a ui-sref="users.profile({userId:user.id})" class="text-navy"><strong>{{user.displayName}}</strong></a>
+                            </td>
                             <td>{{user.email}}</td>
                             <td>{{user.socialType==null? 'USER_TYPE_NONE':user.socialType|translate}}</td>
                             <td>{{user.role|translate}}</td>
@@ -105,12 +106,12 @@
                         </tbody>
                         <tfoot>
                         <tr ng-if="usersTable.length == 0">
-                            <td colspan="4" class="text-center no-data">
+                            <td colspan="6" class="text-center no-data">
                                 <div>{{'NO_DATA' | translate}}</div>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="4" class="text-center">
+                            <td colspan="6" class="text-center">
                                 <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="4"></div>
                             </td>
                         </tr>

@@ -1,15 +1,15 @@
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-sm-4">
-        <h2>Project detail</h2>
+        <h2>{{'PROJECT_DETAILS'|translate}}</h2>
         <ol class="breadcrumb">
             <li>
-                <a ui-sref="index.main">Home</a>
+                <a ui-sref="index.main">{{'HOME'|translate}}</a>
             </li>
             <li>
-                <a ui-sref="index.projects">Project list</a>
+                <a ui-sref="index.projects">{{'PROJECT_LIST'|translate}}</a>
             </li>
             <li class="active">
-                <strong>Project details</strong>
+                <strong>{{'PROJECT_DETAILS'|translate}}</strong>
             </li>
         </ol>
     </div>
@@ -25,14 +25,14 @@
 
 
                                 <a ng-click="editProject()" ng-show="projectOwner.id==currentUser.id"
-                                   class="btn btn-primary btn-sm pull-right">Edit project</a>
+                                   class="btn btn-primary btn-sm pull-right">{{'EDIT_PROJECT'|translate}}</a>
                                 <a style="margin-right: 5px;" href="/api/files/report/{{project.id}}"
-                                   class="btn btn-primary btn-sm pull-right">Generate report</a>
+                                   class="btn btn-primary btn-sm pull-right">{{'GENERATE_REPORT'|translate}}</a>
                                 <a style="margin-right: 5px;" ui-sref="index.issue-tracker({projectId:project.id})"
-                                   class="btn btn-primary btn-sm pull-right">Tasks</a>
+                                   class="btn btn-primary btn-sm pull-right">{{'TASKS'|translate}}</a>
 
                                 <a style="margin-right: 5px;" ui-sref="index.project-agile({projectId:project.id})"
-                                   class="btn btn-primary btn-sm pull-right">My agile board</a>
+                                   class="btn btn-primary btn-sm pull-right">{{'MY_AGILE_BOARD'|translate}}</a>
 
                                 <!--<div class="btn-group pull-right" style="margin-right: 5px;" dropdown>-->
                                 <!--<button type="button" class="btn btn-white btn-sm dropdown-toggle" dropdown-toggle>-->
@@ -47,8 +47,8 @@
                                 <!--</ul>-->
                                 <!--</div>-->
 
-                                <h2 ng-show="project.client">Contract with {{project.client}}</h2>
-                                <h2 ng-show="!project.client">Contract</h2>
+                                <h2 ng-show="project.client">{{'CONTRACT_WITH'|translate}} {{project.client}}</h2>
+                                <h2 ng-show="!project.client">{{'CONTRACT'|translate}}</h2>
                             </div>
                         </div>
                     </div>
@@ -64,13 +64,13 @@
                                     <a ng-show="projectOwner.id==currentUser.id" ng-click="changeStatus()"><i
                                             class="fa fa-edit"></i></a>
                                 </dd>
-                                <dt>Name:</dt>
+                                <dt>{{'LABEL_NAME'|translate}}:</dt>
                                 <dd>{{project.name}}</dd>
-                                <dt>Created by:</dt>
+                                <dt>{{'CREATED_BY'|translate}}:</dt>
                                 <dd>{{projectOwner.displayName}}</dd>
-                                <dt>Client:</dt>
+                                <dt>{{'CLIENT'|translate}}:</dt>
                                 <dd><a class="text-navy">{{project.client}}</a></dd>
-                                <dt>Version:</dt>
+                                <dt>{{'VERSION'|translate}}:</dt>
                                 <dd>{{project.version}}</dd>
                             </dl>
                         </div>
@@ -95,15 +95,14 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <dl class="dl-horizontal">
-                                <dt>Completed:</dt>
+                                <dt>{{'LABEL_COMPLETED_TRANSLATED'|translate}}:</dt>
                                 <dd>
                                     <div class="progress progress-striped active m-b-sm">
                                         <div style="width:{{otherInformations.percentage}}%;"
                                              class="progress-bar"></div>
                                     </div>
-                                    <small>Project completed in <strong>{{otherInformations.percentage}}%</strong>.
-                                        Remaining close the project, sign
-                                        a contract and invoice.
+                                    <small>{{'PROJECT_COMPLETED_IN'|translate}} <strong>{{otherInformations.percentage}}%</strong>.
+                                        {{'PROJECT_PERCENTAGE_MESSAGE_1'|translate}}
                                     </small>
                                 </dd>
                             </dl>
@@ -141,7 +140,7 @@
                                                 <div class="media-body">
                                                     <textarea ng-enter="createComment()" ng-model="newComment.content"
                                                               class="form-control"
-                                                              placeholder="Write comment..."></textarea>
+                                                              placeholder="{{'WRITE_COMMENT'|translate}}..."></textarea>
                                                 </div>
                                             </div>
 
@@ -152,18 +151,18 @@
                                         <div class="input-group" style="width: 100%;">
                                             <input type="text"
                                                    ng-model="searchBox.value"
-                                                   placeholder="Search"
+                                                   placeholder="{{'LABEL_SEARCH'|translate}}"
                                                    class="input-sm form-control"/>
                                         </div>
                                         <div>
                                             <table class="table table-hover issue-tracker">
                                                 <tbody>
                                                 <tr>
-                                                    <th>File name</th>
-                                                    <th>Created</th>
-                                                    <th>Uploader</th>
-                                                    <th>Size</th>
-                                                    <th>Actions</th>
+                                                    <th>{{'FILE_NAME'|translate}}</th>
+                                                    <th>{{'LABEL_CREATED'|translate}}</th>
+                                                    <th>{{'UPLOADER'|translate}}</th>
+                                                    <th>{{'SIZE'|translate}}</th>
+                                                    <th>{{'ACTIONS'|translate}}</th>
                                                 </tr>
                                                 <tr ng-repeat="projectFile in projectFiles|filter:fileFilter">
                                                     <td>
@@ -179,7 +178,7 @@
                                                         {{convert(projectFile.size)}}
                                                     </td>
                                                     <td>
-                                                        <a href="api/files/project/{{projectFile.id}}/content">Download</a>
+                                                        <a href="api/files/project/{{projectFile.id}}/content">{{'DOWNLOAD'|translate}}</a>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -242,7 +241,7 @@
             <!--</ul>-->
             <!--</div>-->
 
-            <h4>Project description</h4>
+            <h4>{{'PROJECT_DESCRIPTION'|translate}}</h4>
             <!--<img src="public/img/default_logo.png" class="img-responsive">-->
 
             <p class="small">

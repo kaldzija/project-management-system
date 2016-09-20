@@ -1,21 +1,21 @@
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-sm-6" ng-controller="NavigationHelpController">
-        <h2>Project detail</h2>
+        <h2>{{'TASK_DETAILS'|translate}}</h2>
         <ol class="breadcrumb">
             <li>
-                <a ui-sref="index.main">Home</a>
+                <a ui-sref="index.main">{{'HOME'|translate}}</a>
             </li>
             <li>
-                <a ui-sref="index.projects">Project list</a>
+                <a ui-sref="index.projects">{{'PROJECT_LIST'|translate}}</a>
             </li>
             <li>
-                <a ui-sref="index.project-details({projectId:projectId})">Project details</a>
+                <a ui-sref="index.project-details({projectId:projectId})">{{'PROJECT_DETAILS'|translate}}</a>
             </li>
             <li>
-                <a ui-sref="index.issue-tracker({projectId:projectId})">Tasks</a>
+                <a ui-sref="index.issue-tracker({projectId:projectId})">{{'TASKS'|translate}}</a>
             </li>
             <li class="active">
-                <strong>Task details</strong>
+                <strong>{{'TASK_DETAILS'|translate}}</strong>
             </li>
         </ol>
     </div>
@@ -29,7 +29,8 @@
                         <div class="col-lg-12">
                             <div class="m-b-md">
                                 <a ng-show="projectOwner.id==currentUser.id||(task.user.id==currentUser.id&&project.status=='ACTIVE')"
-                                   ng-click="editTask()" class="btn btn-primary btn-sm pull-right">Edit</a>
+                                   ng-click="editTask()"
+                                   class="btn btn-primary btn-sm pull-right">{{'EDIT'|translate}}</a>
                                 <!--<a style="margin-right: 5px;" ui-sref="index.issue-tracker({projectId:project.id})" class="btn btn-white btn-sm pull-right">Tasks</a>-->
 
                                 <!--<div class="btn-group pull-right" style="margin-right: 5px;" dropdown>-->
@@ -50,7 +51,7 @@
                     <div class="row">
                         <div class="col-lg-5">
                             <dl class="dl-horizontal">
-                                <dt>Status:</dt>
+                                <dt>{{'LABEL_STATUS'|translate}}:</dt>
                                 <dd ng-show="task.status=='TODO'">{{'LABEL_TODO'|translate}}
                                     <a ng-show="projectOwner.id==currentUser.id||(task.user.id==currentUser.id&&project.status=='ACTIVE')"
                                        ng-click="changeStatus()"><i
@@ -66,11 +67,11 @@
                                        ng-click="changeStatus()"><i
                                             class="fa fa-edit"></i></a>
                                 </dd>
-                                <dt>Name:</dt>
+                                <dt>{{'LABEL_NAME'|translate}}:</dt>
                                 <dd>{{task.name}}</dd>
-                                <dt>Created by:</dt>
+                                <dt>{{'CREATED_BY'|translate}}:</dt>
                                 <dd><a class="text-navy">{{task.createdBy.displayName}}</a></dd>
-                                <dt>Assign to:</dt>
+                                <dt>{{'ASSIGN_TO'|translate}}:</dt>
                                 <dd><a class="text-navy">{{task.user.displayName}}</a>
                                     <a ng-show="projectOwner.id==currentUser.id||(task.user.id==currentUser.id&&project.status=='ACTIVE')"
                                        ng-click="changeAssignment()"><i
@@ -81,7 +82,7 @@
                         <div class="col-lg-7" id="cluster_info">
                             <dl class="dl-horizontal">
 
-                                <dt>Last Updated:</dt>
+                                <dt>{{'LABEL_LAST_UPDATED'|translate}}:</dt>
                                 <dd>{{task.updated | date:"dd.MM.yyyy HH:mm"}}</dd>
                                 <dt>{{'LABEL_CREATED'|translate}}:</dt>
                                 <dd>{{task.created | date:"dd.MM.yyyy HH:mm"}}</dd>
@@ -91,7 +92,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <dl class="dl-horizontal">
-                                <dt>Description:</dt>
+                                <dt>{{'LABEL_DESCRIPTION'|translate}}:</dt>
                                 <dd>
                                     <span>{{task.description}}</span>
                                 </dd>
@@ -131,7 +132,7 @@
                                                 <div class="media-body">
                                                     <textarea ng-enter="createComment()" ng-model="newComment.content"
                                                               class="form-control"
-                                                              placeholder="Write comment..."></textarea>
+                                                              placeholder="{{'WRITE_COMMENT'|translate}}..."></textarea>
                                                 </div>
                                             </div>
 
@@ -141,18 +142,18 @@
                                         <div class="input-group" style="width: 100%;">
                                             <input type="text"
                                                    ng-model="searchBox.value"
-                                                   placeholder="Search"
+                                                   placeholder="{{'LABEL_SEARCH'|translate}}"
                                                    class="input-sm form-control"/>
                                         </div>
                                         <div>
                                             <table class="table table-hover issue-tracker">
                                                 <tbody>
                                                 <tr>
-                                                    <th>File name</th>
-                                                    <th>Created</th>
-                                                    <th>Uploader</th>
-                                                    <th>Size</th>
-                                                    <th>Actions</th>
+                                                    <th>{{'FILE_NAME'|translate}}</th>
+                                                    <th>{{'LABEL_CREATED'|translate}}</th>
+                                                    <th>{{'UPLOADER'|translate}}</th>
+                                                    <th>{{'SIZE'|translate}}</th>
+                                                    <th>{{'ACTIONS'|translate}}</th>
                                                 </tr>
                                                 <tr ng-repeat="taskFile in taskFiles|filter:fileFilter">
                                                     <td>

@@ -3,7 +3,7 @@
         <h2>{{'LABEL_NEW_CONTACTS'|translate}}</h2>
         <ol class="breadcrumb">
             <li>
-                <a href="index.html">Home</a>
+                <a href="index.html">{{'HOME'|translate}}</a>
             </li>
             <li class="active">
                 <strong>{{'LABEL_NEW_CONTACTS'|translate}}</strong>
@@ -36,7 +36,8 @@
                                         <td class="client-avatar"><img alt="image" ng-src="api/image/user/{{user.id}}">
                                         </td>
                                         <td><a ng-click="client = 1" class="client-link">{{user.name}}</a></td>
-                                        <td class="contact-type"><i class="fa fa-envelope"> </i></td>
+                                        <td class="contact-type"><i ng-show="user.email" class="fa fa-envelope"> </i>
+                                        </td>
                                         <td> {{user.email}}</td>
                                         <td>{{user.phone}}</td>
                                         <td><a ng-show="!user.hideSendRequest && !user.contact"

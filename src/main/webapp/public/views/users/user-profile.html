@@ -58,11 +58,15 @@
                                         </li>
                                         <li class="list-group-item">
                                             <span class="pull-right">{{user.phone}}</span>
-                                            {{'PHONE'|translate}}{{'LABEL_PROFESSION'|translate}}
+                                            {{'PHONE'|translate}}
                                         </li>
                                         <li class="list-group-item">
                                             <span class="pull-right">{{user.email}}</span>
                                             {{'EMAIL'|translate}}
+                                        </li>
+                                        <li class="list-group-item">
+                                            <span class="pull-right">{{user.role|translate}}</span>
+                                            {{'ROLE'|translate}}
                                         </li>
                                     </ul>
                                 </div>
@@ -72,6 +76,10 @@
                                 <div class="full-height-scroll" full-scroll>
                                     <ul class="list-group clear-list">
                                         <li class="list-group-item fist-item">
+                                            <span class="pull-right">{{user.state|translate}}</span>
+                                            {{'LABEL_STATUS'|translate}}
+                                        </li>
+                                        <li class="list-group-item">
                                             <span class="pull-right">{{user.lastLogin|date:"dd.MM.yyyy HH:mm"}}</span>
                                             {{'LAST_LOGIN'|translate}}
                                         </li>
